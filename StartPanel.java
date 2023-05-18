@@ -1,8 +1,7 @@
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import java.awt.*;
 
-import javax.swing.JLabel;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,10 +9,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class StartPanel extends JPanel {
+public class StartPanel extends JPanel implements MouseListener{
 
     public StartPanel() {
-
+        addMouseListener(this);
     }
 
     @Override
@@ -27,5 +26,37 @@ public class StartPanel extends JPanel {
             e.printStackTrace();
         }
         g.drawImage(background, 0, 0, null);
+        g.setColor(new Color(211, 237, 12));
+        g.fillRect(350,275,200,100);
+
+
+        
+
     }
+
+    public void mouseClicked(MouseEvent e){
+
+  }
+  public void	mouseEntered(MouseEvent e){
+    int X = e.getX();
+    int Y = e.getY();
+  }
+  public void mousePressed(MouseEvent e){
+    int X = e.getX();
+    int Y = e.getY();
+    System.out.println("X: " + X + "Y: " + Y);
+    if((X>=350 && X<=550)&& (Y>=275 && Y<=375)){
+        System.out.println("IN BOUNDS");
+    }
+  }
+  public void mouseReleased(MouseEvent e){
+    
+  }
+@Override
+public void mouseExited(MouseEvent e) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
+}
+
+
 }
