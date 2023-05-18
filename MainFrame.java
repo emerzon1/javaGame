@@ -1,4 +1,4 @@
-import javax.swing.JFrame;
+import javax.swing.*;
 import javax.swing.WindowConstants;
 import java.awt.*;
 /*
@@ -9,16 +9,16 @@ import java.awt.*;
 
 public class MainFrame extends JFrame {
 	private JFrame frame;
-	private MyPanel panel1;
+	private JPanel panel1;
 	
 	public MainFrame() {
-		frame = new JFrame("My first frame");
+		frame = new JFrame("Money Moves");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		panel1 = new MyPanel();
-		panel1.setPreferredSize(new Dimension(700, 900));
-		panel1.setBackground(new Color(20, 120, 138));
-		panel1.setFocusable(true);
+		panel1 = new StartPanel();
+		// panel1 = new MyPanel();
+		// panel1.setPreferredSize(new Dimension(700, 900));
+		// panel1.setBackground(new Color(20, 120, 138));
+		// panel1.setFocusable(true);
 
 		frame.getContentPane().add(panel1);
 	}
@@ -29,4 +29,4 @@ public class MainFrame extends JFrame {
 	}
 }
 
-}
+
