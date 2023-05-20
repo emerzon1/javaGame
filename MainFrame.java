@@ -1,9 +1,7 @@
 import javax.swing.*;
 import javax.swing.WindowConstants;
-import javax.swing.GroupLayout.Alignment;
 
 import java.awt.*;
-import java.awt.event.*;
 /*
 *  Evan Merzon
 *  05/11/2023
@@ -19,7 +17,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         frame = new JFrame("Money Moves");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         instructionsPanel = createInstructionsPanel();
         startPanel = createStartPanel();

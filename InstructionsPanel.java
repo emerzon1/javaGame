@@ -28,10 +28,10 @@ public class InstructionsPanel extends GamePanel {
         g.fillRect(172, 180, 553, 300);
         g.setColor(new Color(0, 0, 0));
         int stringWidth = 50;
-        for (int i = 0; i <= GameUtils.instructions.length(); i += stringWidth) {
+        for (int i = 0; i <= GameUtils.INSTRUCTIONS.length(); i += stringWidth) {
             g.drawString(
-                    i + stringWidth > GameUtils.instructions.length() ? GameUtils.instructions.substring(i)
-                            : GameUtils.instructions.substring(i, i + stringWidth),
+                    i + stringWidth > GameUtils.INSTRUCTIONS.length() ? GameUtils.INSTRUCTIONS.substring(i)
+                            : GameUtils.INSTRUCTIONS.substring(i, i + stringWidth),
                     180, 200 + (i / stringWidth) * 30);
         }
 
