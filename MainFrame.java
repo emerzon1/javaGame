@@ -12,8 +12,10 @@ import java.awt.event.*;
 
 public class MainFrame extends JFrame {
     private JFrame frame;
+    public CardLayout layout;
     private JPanel instructionsPanel;
     private JPanel startPanel;
+    public JPanel mainCards;
 
     public MainFrame() {
         frame = new JFrame("Money Moves");
@@ -21,12 +23,18 @@ public class MainFrame extends JFrame {
 
         instructionsPanel = createInstructionsPanel();
         startPanel = createStartPanel();
-
-        frame.getContentPane().add(startPanel);
+        layout = new CardLayout();
+        mainCards = new JPanel(layout);
+        mainCards.add(instructionsPanel, "instructions");
+        mainCards.add(startPanel, "start");
+        JPanel home = new JPanel();
+        home.add(mainCards);
+        layout.show(mainCards, "start");
+        frame.getContentPane().add(home);
     }
 
     private JPanel createStartPanel() {
-        JPanel res = new StartPanel();
+        JPanel res = new StartPanel(this);
         res.setPreferredSize(new Dimension(900, 700));
         res.setFocusable(true);
 
@@ -34,23 +42,10 @@ public class MainFrame extends JFrame {
     }
 
     private JPanel createInstructionsPanel() {
-        JPanel res = new InstructionsPanel();
-        GridLayout l = new GridLayout(9, 3);
-        res.setLayout(l);
-        res.setPreferredSize(new Dimension(500, 500));
+        JPanel res = new InstructionsPanel(this);
+        res.setPreferredSize(new Dimension(900, 700));
         res.setBackground(new Color(20, 120, 138));
         res.setFocusable(true);
-        JButton startButton = new JButton("Return Home");
-        startButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("fixed");
-            }
-        });
-        for (int i = 0; i < 32; i++) {
-            res.add(new JPanel());
-        }
-        res.add(startButton, JLabel.CENTER);
-        // l.setComponentAlignment(startButton, Alignment.CENTER);
         return res;
     }
 
