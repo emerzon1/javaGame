@@ -20,13 +20,7 @@ public class StartPanel extends GamePanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        BufferedImage background = null;
-        try {
-            background = ImageIO.read(new File("StartScreenUp1.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        g.drawImage(background, 0, 0, null);
+        GameUtils.drawImage("StartScreenUp1.png", g);
 
         g.setColor(new Color(211, 237, 12));
         g.fillRect(350, 275, 200, 100);// Start Box

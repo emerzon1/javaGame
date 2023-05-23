@@ -16,13 +16,7 @@ public class InstructionsPanel extends GamePanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        BufferedImage background = null;
-        try {
-            background = ImageIO.read(new File("StartScreen1.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        g.drawImage(background, 0, 0, null);
+        GameUtils.drawImage("StartScreen1.png", g);
         g.setFont(new Font("Teko", Font.PLAIN, 20));
         g.setColor(new Color(50, 232, 8));
         g.fillRect(172, 180, 553, 300);
