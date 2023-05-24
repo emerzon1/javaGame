@@ -13,6 +13,7 @@ public class MainFrame extends JFrame {
     public CardLayout layout;
     private JPanel instructionsPanel;
     private JPanel startPanel;
+    private JPanel mainPanel;
     public JPanel mainCards;
 
     public MainFrame() {
@@ -21,10 +22,12 @@ public class MainFrame extends JFrame {
 
         instructionsPanel = createInstructionsPanel();
         startPanel = createStartPanel();
+        mainPanel = createMainPanel();
         layout = new CardLayout();
         mainCards = new JPanel(layout);
         mainCards.add(instructionsPanel, "instructions");
         mainCards.add(startPanel, "start");
+        mainCards.add(mainPanel, "game");
         JPanel home = new JPanel();
         home.add(mainCards);
         layout.show(mainCards, "start");
@@ -39,10 +42,18 @@ public class MainFrame extends JFrame {
         return res;
     }
 
+    private JPanel createMainPanel() {
+        JPanel res = new MainGamePanel(this);
+        res.setPreferredSize(new Dimension(900, 700));
+        res.setBackground(new Color(50, 232, 8));
+        res.setFocusable(true);
+
+        return res;
+    }
+
     private JPanel createInstructionsPanel() {
         JPanel res = new InstructionsPanel(this);
         res.setPreferredSize(new Dimension(900, 700));
-        res.setBackground(new Color(20, 120, 138));
         res.setFocusable(true);
         return res;
     }

@@ -1,11 +1,6 @@
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class StartPanel extends GamePanel {
     private boolean insideS = false;// true when Mouse is in start Box
@@ -57,8 +52,11 @@ public class StartPanel extends GamePanel {
             navigateTo("instructions");
         }
         if (insideS && clickedS) {
-            System.out.println("START");
+            navigateTo("game");
+            MainGamePanel.setPaused(false);
         }
+        insideI = false;
+        insideS = false;
     }
 
     @Override

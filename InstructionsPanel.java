@@ -1,9 +1,5 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class InstructionsPanel extends GamePanel {
     private boolean hasClicked = false;
@@ -54,6 +50,7 @@ public class InstructionsPanel extends GamePanel {
             navigateTo("start");
         }
         hasClicked = false;
+        insideHome = false;
     }
 
     @Override

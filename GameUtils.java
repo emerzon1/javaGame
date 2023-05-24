@@ -1,5 +1,6 @@
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -19,11 +20,21 @@ public class GameUtils {
     public static void drawImage(String image, Graphics g) {
         BufferedImage background = null;
         try {
-            background = ImageIO.read(new File(image));
+            background = ImageIO.read(new File("./images/" + image));
         } catch (IOException e) {
             e.printStackTrace();
         }
         g.drawImage(background, 0, 0, null);
+    }
+
+    public static void drawImage(String image, Graphics g, int width, int height) {
+        BufferedImage background = null;
+        try {
+            background = ImageIO.read(new File("./images/" + image));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
     }
 
     public static final Font buttonFont = new Font("Teko", Font.PLAIN, 30);
