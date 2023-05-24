@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Timer;
 
@@ -8,15 +10,20 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     private boolean insideHomeButton;
     private boolean insideClickButton;
     private long moneyPerClick = 1L;
+    private long upgradeClickPrice = 10L;
     private Timer timer;
     private long money;
+    private List<Business> businesses;
 
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(10, this);
-        money = 0;
+        money = 0L;
         timer.start();
         insideHomeButton = false;
+        businesses = List.of(
+
+        );
     }
 
     @Override
@@ -27,13 +34,18 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         GameUtils.drawImage("homeLogo.png", g, 50, 50);
         g.setColor(new Color(0, 0, 0));
         g.setFont(new Font("Teko", Font.BOLD, 40));
-        g.drawString("Money: $" + money, 330, 40);
+        g.drawString("Money: $" + GameUtils.format(money), 330, 40);
 
         g.setColor(new Color(211, 237, 12));
         g.fillRect(200, 75, 200, 75);
+        g.fillRect(450, 75, 200, 75);
         g.setColor(new Color(0, 0, 0));
+        g.setFont(new Font("Teko", Font.PLAIN, 15));
+        g.drawString("Upgrade Click: $" + GameUtils.format(upgradeClickPrice), 470, 125);
         g.setFont(GameUtils.buttonFont);
         g.drawString("Click for $", 220, 125);
+        g.setFont(new Font("Teko", Font.PLAIN, 10));
+        g.drawString("$" + GameUtils.formatNumberWithCommas(moneyPerClick) + " per click", 200, 160);
     }
 
     public static void setPaused(boolean b) {
@@ -77,6 +89,13 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
         if (insideClickButton && GameUtils.isInside(e, 200, 400, 75, 150)) {
             money += moneyPerClick;
+        }
+        if (GameUtils.isInside(e, 450, 650, 75, 150)) {
+            if (money >= upgradeClickPrice) {
+                money -= upgradeClickPrice;
+                upgradeClickPrice *= 1.8;
+                moneyPerClick += 1 + 0.35 * moneyPerClick;
+            }
         }
         repaint();
     }
