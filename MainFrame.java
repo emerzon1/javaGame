@@ -1,3 +1,7 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.WindowConstants;
 
@@ -7,6 +11,7 @@ import java.awt.*;
 *  05/11/2023
 *  Frames with graphics
 */
+import java.io.File;
 
 public class MainFrame extends JFrame {
     private JFrame frame;
@@ -15,6 +20,7 @@ public class MainFrame extends JFrame {
     private JPanel startPanel;
     private JPanel mainPanel;
     public JPanel mainCards;
+    private static Clip music;
 
     public MainFrame() {
         frame = new JFrame("Money Moves");
@@ -32,6 +38,18 @@ public class MainFrame extends JFrame {
         home.add(mainCards);
         layout.show(mainCards, "start");
         frame.getContentPane().add(home);
+
+        try {
+            // Open an audio input stream.
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("./sounds/Music.wav"));
+            // Get a sound clip resource.
+            music = AudioSystem.getClip();
+            // Open audio clip and load samples from the audio input stream.
+            music.open(audioIn);
+            music.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private JPanel createStartPanel() {
