@@ -7,13 +7,17 @@ import javax.swing.Timer;
 
 public class MainGamePanel extends GamePanel implements ActionListener {
     public static boolean paused = true;
-    private boolean insideHomeButton;
-    private boolean insideClickButton;
+    private boolean insideHomeButton,insideClickButton,insideBus1,insideBus2,insideBus3,insideBus4,insideBus5;
     private long moneyPerClick = 1L;
     private long upgradeClickPrice = 10L;
     private Timer timer;
     private long money;
+    private int xSlide;
     private List<Business> businesses;
+
+    public long getMoney(){
+        return money;
+    }
 
     public MainGamePanel(MainFrame c) {
         super(c);
@@ -22,7 +26,11 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         timer.start();
         insideHomeButton = false;
         businesses = List.of(
-
+            new Business("Lemonade", 1000, false , 25, 200),
+            new Business("Bus2",10000, false, 25, 300 ),
+            new Business("Bus3",100000, false, 25, 400 ),
+            new Business("Bus4",1000000, false, 25, 500 ),
+            new Business("Bus5",10000000, false, 25, 600 )
         );
     }
 
@@ -41,13 +49,16 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.fillRect(450, 75, 200, 75);
         g.setColor(new Color(0, 0, 0));
         g.setFont(new Font("Teko", Font.PLAIN, 15));
+
         g.drawString("Upgrade Click: $" + GameUtils.format(upgradeClickPrice), 470, 125);
         g.setFont(GameUtils.buttonFont);
         g.drawString("Click for $", 220, 125);
         g.setFont(new Font("Teko", Font.PLAIN, 10));
         g.drawString("$" + GameUtils.formatNumberWithCommas(moneyPerClick) + " per click", 200, 160);
+        for (Business b : businesses) {
+            b.Draw(g);
+        }
     }
-
     public static void setPaused(boolean b) {
         paused = b;
     }
@@ -78,6 +89,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         } else if (GameUtils.isInside(e, 200, 400, 75, 150)) {
             insideClickButton = true;
         }
+
         repaint();
     }
 
