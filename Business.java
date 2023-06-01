@@ -116,6 +116,14 @@ public class Business {
             g.fillRect(xPos, yPos, (175 * timePassed) / time, 75);
             g.setColor(new Color(0, 0, 0));
         }
+        //draw icons
+        GameUtils.drawImage("Lem_Icon.png",g, 25, 200, 150,75);
+        GameUtils.drawImage("Fish_Icon.png",g, 25, 300, 150,75);
+        GameUtils.drawImage("Piz_Icon.png",g, 25, 400, 150,75);
+        GameUtils.drawImage("Film_Icon.png",g, 25, 500, 150,75);
+        GameUtils.drawImage("Oil_Icon.png",g, 25, 600, 150,75);
+
+   
         g.setColor(new Color(0, 0, 0));
         if (bought) {
             GameUtils.drawImage("click.png", g, 16, 15, xPos + 125, yPos + 5);
@@ -124,6 +132,7 @@ public class Business {
             g.drawString("Level " + level, xPos + 185, yPos + 10);
         }
         if (managerBought) {
+
             isSliding = true;
         }
         if (timePassed >= time) {

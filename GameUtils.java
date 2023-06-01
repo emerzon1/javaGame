@@ -72,6 +72,15 @@ public class GameUtils {
         }
         g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
     }
+    public static void drawImage(String image, Graphics g, int xPos, int yPos, int width, int height) {
+        BufferedImage background = null;
+        try {
+            background = ImageIO.read(new File("./images/" + image));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        g.drawImage(background, xPos, yPos, null);
+    }
 
     public static void drawImage(String image, int x, int y, Graphics g) {
         BufferedImage background = null;
@@ -83,15 +92,15 @@ public class GameUtils {
         g.drawImage(background, x, y, null);
     }
 
-    public static void drawImage(String image, Graphics g, int width, int height, int x, int y) {
-        BufferedImage background = null;
-        try {
-            background = ImageIO.read(new File("./images/" + image));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, null);
-    }
+    // public static void drawImage(String image, Graphics g, int width, int height, int x, int y) {
+    //     BufferedImage background = null;
+    //     try {
+    //         background = ImageIO.read(new File("./images/" + image));
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, null);
+    // }
 
     public static final Font buttonFont = new Font("Teko", Font.PLAIN, 30);
     public static final String INSTRUCTIONS = "Welcome to Money Moves. Your goal is to grow your business and make as much money as possible";
