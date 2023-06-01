@@ -55,6 +55,13 @@ public class Business implements ActionListener, MouseListener{
             g.setColor(new Color(255, 0, 0));
             g.fillRect(xPos, yPos, xSlide, 25);
         }
+        //draw icons
+        GameUtils.drawImage("Lem_Icon.png",g, 25, 200, 150,75);
+        GameUtils.drawImage("Fish_Icon.png",g, 25, 300, 150,75);
+        GameUtils.drawImage("Piz_Icon.png",g, 25, 400, 150,75);
+        GameUtils.drawImage("Film_Icon.png",g, 25, 500, 150,75);
+        GameUtils.drawImage("Oil_Icon.png",g, 25, 600, 150,75);
+
     }
 
     @Override

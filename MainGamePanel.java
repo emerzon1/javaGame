@@ -8,6 +8,7 @@ import javax.swing.Timer;
 public class MainGamePanel extends GamePanel implements ActionListener {
     public static boolean paused = true;
     private boolean insideHomeButton,insideClickButton,insideBus1,insideBus2,insideBus3,insideBus4,insideBus5;
+    private boolean insideMiniGame;
     private long moneyPerClick = 1L;
     private long upgradeClickPrice = 10L;
     private Timer timer;
@@ -58,6 +59,8 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         for (Business b : businesses) {
             b.Draw(g);
         }
+
+        g.drawRect(650, 200, 200,75);
     }
     public static void setPaused(boolean b) {
         paused = b;
@@ -77,6 +80,9 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         if (GameUtils.isInside(e, 200, 400, 75, 150)) {
             insideClickButton = true;
         }
+        if(GameUtils.isInside(e,650,850,200,275)){
+            insideMiniGame = true;
+        }
         repaint();
     }
 
@@ -84,10 +90,14 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public void mousePressed(MouseEvent e) {
         insideHomeButton = false;
         insideClickButton = false;
+        insideMiniGame = false;
         if (GameUtils.isInside(e, 0, 50, 0, 50)) {
             insideHomeButton = true;
         } else if (GameUtils.isInside(e, 200, 400, 75, 150)) {
             insideClickButton = true;
+        }
+        else if(GameUtils.isInside(e,650,850,200,275)){
+            insideMiniGame = true;
         }
 
         repaint();
@@ -101,6 +111,10 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
         if (insideClickButton && GameUtils.isInside(e, 200, 400, 75, 150)) {
             money += moneyPerClick;
+        }
+        if(GameUtils.isInside(e,650,850,200,275)&& insideMiniGame){
+            navigateTo("MiniGame");
+            setPaused(true);
         }
         if (GameUtils.isInside(e, 450, 650, 75, 150)) {
             if (money >= upgradeClickPrice) {
