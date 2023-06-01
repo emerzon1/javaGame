@@ -1,99 +1,171 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
-public class Business implements ActionListener, MouseListener{
-    private boolean isInside;
-    private int price;
+public class Business {
+    private long price;
+    private long upgrade;
+    private long money;
     private boolean bought;
+    private boolean unlocked;
     private String name;
-    private int xPos,yPos;
+    private int xPos, yPos;
     private boolean isSliding;
+    private int level = 1;
+    public boolean managerBought = false;
     private int xSlide;
-    private Timer time = new Timer();
+    private int time;
+    private int timePassed;
+    private MainGamePanel container;
 
-    
+    public void tick() {
+        if (isSliding) {
+            timePassed += 5;
+        }
+    }
 
-    public int getPrice(){
+    public long getPrice() {
         return price;
     }
-    public boolean isBought(){
+
+    public long getUpgradePrice() {
+        return upgrade;
+    }
+
+    public boolean isBought() {
         return bought;
     }
-    public int getX(){
+
+    public void setBought() {
+        bought = true;
+    }
+
+    private void setUnlocked() {
+        unlocked = true;
+    }
+
+    public boolean isUnlocked() {
+        return unlocked;
+    }
+
+    public int getX() {
         return xPos;
     }
-    public int getY(){
+
+    public int getY() {
         return yPos;
     }
 
-    public Business(String n, int p, boolean b, int x, int y){
-        
+    public Business(String n, long p, boolean b, int x, int y, int time, MainGamePanel g) {
+        super();
         name = n;
-        xPos= x;
+        xPos = x;
         yPos = y;
         price = p;
         bought = b;
-        isInside = false;
+        container = g;
+        this.time = time;
         isSliding = false;
+        defaultStuff();
     }
 
-    
-    public void Draw(Graphics g) {
+    public Business(String n, int p, boolean b, int x, int y, int time, MainGamePanel g, boolean unlocked) {
+        super();
+        name = n;
+        xPos = x;
+        yPos = y;
+        price = p;
+        bought = b;
+        container = g;
+        this.time = time;
+        isSliding = false;
+        this.unlocked = unlocked;
+        defaultStuff();
+    }
+
+    public void defaultStuff() {
+        upgrade = (long) (price * 1.2);
+        money = price / 10;
+    }
+
+    public void draw(Graphics g) {
         g.setColor(new Color(211, 237, 12));
-        //Business Buttons
-        g.fillRect(xPos, yPos, 150, 75);//First Business
+        // Business Buttons
+        if (!bought) {
+            g.setColor(new Color(150, 150, 150, 150));
+        }
+        g.fillRect(xPos, yPos, 175, 75);// First Business
 
-        g.setColor(new Color(255,140,0));
-        //Buy / Upgrade Buttons
-        g.fillRect(200,yPos,150,75 );
-        g.setColor(new Color(0,0,0));
+        g.setColor(new Color(255, 140, 0));
+        // Buy / Upgrade Buttons
+        if (!unlocked || level == 100) {
+            g.setColor(new Color(100, 100, 100));
+        }
+        g.fillRect(xPos + 180, yPos, 150, 75);
+        if (bought && !managerBought) {
+            g.fillRect(xPos, yPos - 30, 100, 25);
+            g.setColor(new Color(0, 0, 0));
+            g.drawString("Manager: $" + GameUtils.format(price * 10), xPos + 10, yPos - 15);
+        }
+        g.setColor(new Color(0, 0, 0));
         g.setFont(GameUtils.buttonFont);
-        g.drawString("Buy",245,yPos+50 );
-        if (isInside && isSliding) {
-            System.out.println("Working");
+        g.drawString(bought ? "Upgrade" : "Buy", xPos + (bought ? 192 : 220), yPos + 50);
+        g.setFont(new Font("Teko", Font.PLAIN, 10));
+        g.drawString("Price: " + GameUtils.format(bought ? upgrade : price), xPos + 185, yPos + 90);
+        if (isSliding) {
             g.setColor(new Color(255, 0, 0));
-            g.fillRect(xPos, yPos, xSlide, 25);
+            g.fillRect(xPos, yPos, (175 * timePassed) / time, 75);
+            g.setColor(new Color(0, 0, 0));
         }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (GameUtils.isInside(e, xPos, xPos + 150, yPos, yPos + 75)) {
-            isInside = true;
+        g.setColor(new Color(0, 0, 0));
+        if (bought) {
+            GameUtils.drawImage("click.png", g, 16, 15, xPos + 125, yPos + 5);
+            GameUtils.drawImage("money.png", g, 30, 30, xPos + 145, yPos);
+            g.setColor(new Color(0, 0, 0));
+            g.drawString("Level " + level, xPos + 185, yPos + 10);
+        }
+        if (managerBought) {
             isSliding = true;
-            System.out.println("Pressed");
-            
-        } else {
-            isInside = false;
         }
-        if(isSliding&& xSlide <=150)
-        xSlide+=1;
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
+        if (timePassed >= time) {
+            timePassed -= time;
+            container.increaseMoney(money);
+            if (!managerBought) {
+                isSliding = false;
+            }
+        }
     }
 
+    public void unlock() {
+        this.unlocked = true;
+    }
 
-    
+    public void upgrade() {
+        if (level == 100) {
+            return;
+        }
+        container.increaseMoney(-1 * upgrade);
+        money *= 1.2;
+        upgrade *= 1.2;
+        level++;
+        if (level % 10 == 0) {
+            time = (int) (time * 0.7);
+        }
+    }
+
+    public boolean isInsideBuy(MouseEvent e) {
+        return GameUtils.isInside(e, xPos + 175, xPos + 325, yPos, yPos + 75);
+    }
+
+    public boolean isInsideManager(MouseEvent e) {
+        return GameUtils.isInside(e, xPos, xPos + 100, yPos - 30, yPos - 5);
+    }
+
+    public boolean isInsideSlider(MouseEvent e) {
+        return GameUtils.isInside(e, xPos, xPos + 175, yPos, yPos + 75);
+    }
+
+    public void setSliding() {
+        isSliding = true;
+    }
+
 }

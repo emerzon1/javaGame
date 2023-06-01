@@ -7,31 +7,36 @@ import javax.swing.Timer;
 
 public class MainGamePanel extends GamePanel implements ActionListener {
     public static boolean paused = true;
-    private boolean insideHomeButton,insideClickButton,insideBus1,insideBus2,insideBus3,insideBus4,insideBus5;
+    private boolean insideHomeButton, insideClickButton;
     private long moneyPerClick = 1L;
     private long upgradeClickPrice = 10L;
     private Timer timer;
     private long money;
     private int xSlide;
+    private int numUnlocked = 1;
     private List<Business> businesses;
 
-    public long getMoney(){
+    public long getMoney() {
         return money;
     }
 
     public MainGamePanel(MainFrame c) {
         super(c);
-        timer = new Timer(10, this);
-        money = 0L;
+        timer = new Timer(5, this);
+        money = 100000L;
         timer.start();
         insideHomeButton = false;
         businesses = List.of(
-            new Business("Lemonade", 1000, false , 25, 200),
-            new Business("Bus2",10000, false, 25, 300 ),
-            new Business("Bus3",100000, false, 25, 400 ),
-            new Business("Bus4",1000000, false, 25, 500 ),
-            new Business("Bus5",10000000, false, 25, 600 )
-        );
+                new Business("Lemonade", 100, false, 25, 200, 50, this, true),
+                new Business("Bus2", 1000, false, 25, 350, 100, this),
+                new Business("Bus3", 10000, false, 25, 500, 500, this),
+                new Business("Bus4", 100000, false, 450, 200, 1000, this),
+                new Business("Bus5", 1000000, false, 450, 350, 2500, this),
+                new Business("Bus6", 10000000, false, 450, 500, 5000, this));
+    }
+
+    public void repaintHome() {
+        repaint();
     }
 
     @Override
@@ -56,9 +61,14 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.setFont(new Font("Teko", Font.PLAIN, 10));
         g.drawString("$" + GameUtils.formatNumberWithCommas(moneyPerClick) + " per click", 200, 160);
         for (Business b : businesses) {
-            b.Draw(g);
+            b.draw(g);
         }
     }
+
+    public void increaseMoney(long change) {
+        money += change;
+    }
+
     public static void setPaused(boolean b) {
         paused = b;
     }
@@ -67,6 +77,11 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (paused) {
             return;
+        }
+        for (Business b : businesses) {
+            if (b.isUnlocked()) {
+                b.tick();
+            }
         }
         repaint();
     }
@@ -107,6 +122,26 @@ public class MainGamePanel extends GamePanel implements ActionListener {
                 money -= upgradeClickPrice;
                 upgradeClickPrice *= 1.8;
                 moneyPerClick += 1 + 0.35 * moneyPerClick;
+            }
+        }
+        for (Business b : businesses) {
+            if (b.isUnlocked()) {
+                if (!b.isBought() && b.isInsideBuy(e) && money >= b.getPrice()) {
+                    b.setBought();
+                    money -= b.getPrice();
+                    businesses.get(numUnlocked++).unlock();
+                } else if (b.isInsideBuy(e) && money >= b.getUpgradePrice()) {
+                    b.upgrade();
+                }
+                if (b.isInsideSlider(e) && b.isBought()) {
+                    b.setSliding();
+                }
+                if (!b.managerBought && b.isInsideManager(e)) {
+                    if (money >= b.getPrice() * 10) {
+                        money -= b.getPrice() * 10;
+                        b.managerBought = true;
+                    }
+                }
             }
         }
         repaint();
