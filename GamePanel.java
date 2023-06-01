@@ -16,6 +16,11 @@ public abstract class GamePanel extends JPanel implements MouseListener, MouseMo
         addMouseMotionListener(this);
     }
 
+    protected GamePanel() {
+        addMouseListener(this);
+        addMouseMotionListener(this);
+    }
+
     protected void navigateTo(String loc) {
         container.layout.show(container.mainCards, loc);
     }
