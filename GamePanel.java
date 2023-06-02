@@ -11,7 +11,6 @@ public abstract class GamePanel extends JPanel implements MouseListener, MouseMo
         container = c;
         statusbar = new JLabel("default");
         // STATUS BAR is for debugging --- remove when turn in
-        add(statusbar, BorderLayout.SOUTH);
         addMouseListener(this);
         addMouseMotionListener(this);
     }
