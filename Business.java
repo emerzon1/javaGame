@@ -120,10 +120,10 @@ public class Business {
         }
         // draw icons
         GameUtils.drawImage("Lem_Icon.png", g, 150, 75, 25, 200);
-        GameUtils.drawImage("Fish_Icon.png", g, 150, 75, 25, 300);
-        GameUtils.drawImage("Piz_Icon.png", g, 150, 75, 25, 400);
-        GameUtils.drawImage("Film_Icon.png", g, 150, 75, 25, 500);
-        GameUtils.drawImage("Oil_Icon.png", g, 150, 75, 25, 600);
+        GameUtils.drawImage("Fish_Icon.png", g, 150, 75, 25, 350);
+        GameUtils.drawImage("Piz_Icon.png", g, 150, 75, 25, 500);
+        GameUtils.drawImage("Film_Icon.png", g, 150, 75, 450, 200);
+        GameUtils.drawImage("Oil_Icon.png", g, 150, 75, 450, 350);
 
         g.setColor(new Color(0, 0, 0));
         if (timePassed >= time) {

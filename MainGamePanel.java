@@ -53,6 +53,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.setColor(new Color(211, 237, 12));
         g.fillRect(200, 75, 200, 75);
         g.fillRect(450, 75, 200, 75);
+        g.fillRect(800, 100, 100, 75);
         g.setColor(new Color(0, 0, 0));
         g.setFont(new Font("Teko", Font.PLAIN, 15));
 
@@ -65,7 +66,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             b.draw(g);
         }
 
-        g.drawRect(650, 200, 200, 75);
+        g.drawString("Play Minigame", 825, 110);
     }
 
     public void increaseMoney(long change) {
@@ -95,7 +96,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         if (GameUtils.isInside(e, 200, 400, 75, 150)) {
             insideClickButton = true;
         }
-        if (GameUtils.isInside(e, 650, 850, 200, 275)) {
+        if (GameUtils.isInside(e, 800, 900, 100, 175)) {
             insideMiniGame = true;
         }
     }
@@ -109,7 +110,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             insideHomeButton = true;
         } else if (GameUtils.isInside(e, 200, 400, 75, 150)) {
             insideClickButton = true;
-        } else if (GameUtils.isInside(e, 650, 850, 200, 275)) {
+        } else if (GameUtils.isInside(e, 800, 900, 100, 175)) {
             insideMiniGame = true;
         }
     }
@@ -123,7 +124,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         if (insideClickButton && GameUtils.isInside(e, 200, 400, 75, 150)) {
             money += moneyPerClick;
         }
-        if (GameUtils.isInside(e, 650, 850, 200, 275) && insideMiniGame) {
+        if (GameUtils.isInside(e, 800, 900, 100, 175) && insideMiniGame) {
             navigateTo("MiniGame");
             setPaused(true);
         }
