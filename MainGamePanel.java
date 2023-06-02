@@ -7,7 +7,7 @@ import javax.swing.Timer;
 
 public class MainGamePanel extends GamePanel implements ActionListener {
     public static boolean paused = true;
-    private boolean insideHomeButton,insideClickButton,insideBus1,insideBus2,insideBus3,insideBus4,insideBus5;
+    private boolean insideHomeButton, insideClickButton, insideBus1, insideBus2, insideBus3, insideBus4, insideBus5;
     private boolean insideMiniGame;
     private long moneyPerClick = 1L;
     private long upgradeClickPrice = 10L;
@@ -23,16 +23,16 @@ public class MainGamePanel extends GamePanel implements ActionListener {
 
     public MainGamePanel(MainFrame c) {
         super(c);
-        timer = new Timer(5, this);
-        money = 100000L;
+        timer = new Timer(20, this);
+        money = 0L;
         timer.start();
         insideHomeButton = false;
         businesses = List.of(
-                new Business("Lemonade", 100, false, 25, 200, 50, this, true),
-                new Business("Bus2", 1000, false, 25, 350, 100, this),
-                new Business("Bus3", 10000, false, 25, 500, 500, this),
-                new Business("Bus4", 100000, false, 450, 200, 1000, this),
-                new Business("Bus5", 1000000, false, 450, 350, 2500, this),
+                new Business("Lemonade", 100, false, 25, 200, 300, this, true),
+                new Business("Bus2", 1000, false, 25, 350, 500, this),
+                new Business("Bus3", 10000, false, 25, 500, 1000, this),
+                new Business("Bus4", 100000, false, 450, 200, 2000, this),
+                new Business("Bus5", 1000000, false, 450, 350, 3500, this),
                 new Business("Bus6", 10000000, false, 450, 500, 5000, this));
     }
 
@@ -65,11 +65,12 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             b.draw(g);
         }
 
-        g.drawRect(650, 200, 200,75);
+        g.drawRect(650, 200, 200, 75);
     }
 
     public void increaseMoney(long change) {
         money += change;
+        repaint(0, 0, 600, 100);
     }
 
     public static void setPaused(boolean b) {
@@ -82,23 +83,21 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             return;
         }
         for (Business b : businesses) {
-            if (b.isUnlocked()) {
+            if (b.isUnlocked() && b.wasSliding) {
                 b.tick();
+                repaint(b.getXBounds(), b.getYBounds(), 175, 75);
             }
         }
-        repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        super.mouseMoved(e);
         if (GameUtils.isInside(e, 200, 400, 75, 150)) {
             insideClickButton = true;
         }
-        if(GameUtils.isInside(e,650,850,200,275)){
+        if (GameUtils.isInside(e, 650, 850, 200, 275)) {
             insideMiniGame = true;
         }
-        repaint();
     }
 
     @Override
@@ -110,12 +109,9 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             insideHomeButton = true;
         } else if (GameUtils.isInside(e, 200, 400, 75, 150)) {
             insideClickButton = true;
-        }
-        else if(GameUtils.isInside(e,650,850,200,275)){
+        } else if (GameUtils.isInside(e, 650, 850, 200, 275)) {
             insideMiniGame = true;
         }
-
-        repaint();
     }
 
     @Override
@@ -127,7 +123,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         if (insideClickButton && GameUtils.isInside(e, 200, 400, 75, 150)) {
             money += moneyPerClick;
         }
-        if(GameUtils.isInside(e,650,850,200,275)&& insideMiniGame){
+        if (GameUtils.isInside(e, 650, 850, 200, 275) && insideMiniGame) {
             navigateTo("MiniGame");
             setPaused(true);
         }

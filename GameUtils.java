@@ -6,13 +6,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.NavigableMap;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 
 public class GameUtils {
+    private static Map<String, BufferedImage> images = new HashMap<>();
+
     private GameUtils() {
 
     }
@@ -65,42 +68,45 @@ public class GameUtils {
 
     public static void drawImage(String image, Graphics g, int width, int height) {
         BufferedImage background = null;
-        try {
-            background = ImageIO.read(new File("./images/" + image));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!images.containsKey(image)) {
+            try {
+                background = ImageIO.read(new File("./images/" + image));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            images.put(image, background);
         }
+        background = images.get(image);
         g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
-    }
-    public static void drawImage(String image, Graphics g, int xPos, int yPos, int width, int height) {
-        BufferedImage background = null;
-        try {
-            background = ImageIO.read(new File("./images/" + image));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        g.drawImage(background, xPos, yPos, null);
     }
 
     public static void drawImage(String image, int x, int y, Graphics g) {
         BufferedImage background = null;
-        try {
-            background = ImageIO.read(new File("./images/" + image));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!images.containsKey(image)) {
+            try {
+                background = ImageIO.read(new File("./images/" + image));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            images.put(image, background);
         }
+        background = images.get(image);
         g.drawImage(background, x, y, null);
     }
 
-    // public static void drawImage(String image, Graphics g, int width, int height, int x, int y) {
-    //     BufferedImage background = null;
-    //     try {
-    //         background = ImageIO.read(new File("./images/" + image));
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    //     g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, null);
-    // }
+    public static void drawImage(String image, Graphics g, int width, int height, int x, int y) {
+        BufferedImage background = null;
+        if (!images.containsKey(image)) {
+            try {
+                background = ImageIO.read(new File("./images/" + image));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            images.put(image, background);
+        }
+        background = images.get(image);
+        g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, null);
+    }
 
     public static final Font buttonFont = new Font("Teko", Font.PLAIN, 30);
     public static final String INSTRUCTIONS = "Welcome to Money Moves. Your goal is to grow your business and make as much money as possible";

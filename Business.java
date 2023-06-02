@@ -9,17 +9,17 @@ public class Business {
     private boolean unlocked;
     private String name;
     private int xPos, yPos;
-    private boolean isSliding;
+    public boolean isSliding;
+    public boolean wasSliding;
     private int level = 1;
     public boolean managerBought = false;
-    private int xSlide;
     private int time;
     private int timePassed;
     private MainGamePanel container;
 
     public void tick() {
         if (isSliding) {
-            timePassed += 5;
+            timePassed += 10;
         }
     }
 
@@ -115,16 +115,24 @@ public class Business {
             g.setColor(new Color(255, 0, 0));
             g.fillRect(xPos, yPos, (175 * timePassed) / time, 75);
             g.setColor(new Color(0, 0, 0));
+        } else {
+            wasSliding = false;
         }
-        //draw icons
-        GameUtils.drawImage("Lem_Icon.png",g, 25, 200, 150,75);
-        GameUtils.drawImage("Fish_Icon.png",g, 25, 300, 150,75);
-        GameUtils.drawImage("Piz_Icon.png",g, 25, 400, 150,75);
-        GameUtils.drawImage("Film_Icon.png",g, 25, 500, 150,75);
-        GameUtils.drawImage("Oil_Icon.png",g, 25, 600, 150,75);
+        // draw icons
+        GameUtils.drawImage("Lem_Icon.png", g, 150, 75, 25, 200);
+        GameUtils.drawImage("Fish_Icon.png", g, 150, 75, 25, 300);
+        GameUtils.drawImage("Piz_Icon.png", g, 150, 75, 25, 400);
+        GameUtils.drawImage("Film_Icon.png", g, 150, 75, 25, 500);
+        GameUtils.drawImage("Oil_Icon.png", g, 150, 75, 25, 600);
 
-   
         g.setColor(new Color(0, 0, 0));
+        if (timePassed >= time) {
+            timePassed -= time;
+            container.increaseMoney(money);
+            if (!managerBought) {
+                isSliding = false;
+            }
+        }
         if (bought) {
             GameUtils.drawImage("click.png", g, 16, 15, xPos + 125, yPos + 5);
             GameUtils.drawImage("money.png", g, 30, 30, xPos + 145, yPos);
@@ -134,18 +142,20 @@ public class Business {
         if (managerBought) {
 
             isSliding = true;
-        }
-        if (timePassed >= time) {
-            timePassed -= time;
-            container.increaseMoney(money);
-            if (!managerBought) {
-                isSliding = false;
-            }
+            wasSliding = true;
         }
     }
 
     public void unlock() {
         this.unlocked = true;
+    }
+
+    public int getXBounds() {
+        return xPos;
+    }
+
+    public int getYBounds() {
+        return yPos;
     }
 
     public void upgrade() {
@@ -156,8 +166,8 @@ public class Business {
         money *= 1.2;
         upgrade *= 1.2;
         level++;
-        if (level % 10 == 0) {
-            time = (int) (time * 0.7);
+        if (level % 20 == 0) {
+            time = (int) Math.round(time * 0.80 / 10) * 10;
         }
     }
 
@@ -175,6 +185,7 @@ public class Business {
 
     public void setSliding() {
         isSliding = true;
+        wasSliding = true;
     }
 
 }
