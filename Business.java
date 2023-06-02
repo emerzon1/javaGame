@@ -118,6 +118,13 @@ public class Business {
         } else {
             wasSliding = false;
         }
+        // draw icons
+        GameUtils.drawImage("Lem_Icon.png", g, 150, 75, 25, 200);
+        GameUtils.drawImage("Fish_Icon.png", g, 150, 75, 25, 300);
+        GameUtils.drawImage("Piz_Icon.png", g, 150, 75, 25, 400);
+        GameUtils.drawImage("Film_Icon.png", g, 150, 75, 25, 500);
+        GameUtils.drawImage("Oil_Icon.png", g, 150, 75, 25, 600);
+
         g.setColor(new Color(0, 0, 0));
         if (timePassed >= time) {
             timePassed -= time;
@@ -133,6 +140,7 @@ public class Business {
             g.drawString("Level " + level, xPos + 185, yPos + 10);
         }
         if (managerBought) {
+
             isSliding = true;
             wasSliding = true;
         }

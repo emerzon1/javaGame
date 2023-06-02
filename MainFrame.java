@@ -18,7 +18,9 @@ public class MainFrame extends JFrame {
     private JPanel instructionsPanel;
     private JPanel startPanel;
     private JPanel mainPanel;
+    private JPanel miniGame;
     public JPanel mainCards;
+
     private static Clip music;
 
     public MainFrame() {
@@ -29,10 +31,13 @@ public class MainFrame extends JFrame {
         startPanel = createStartPanel();
         mainPanel = createMainPanel();
         layout = new CardLayout();
+        miniGame = createMiniGamePanel();
+
         mainCards = new JPanel(layout);
         mainCards.add(instructionsPanel, "instructions");
         mainCards.add(startPanel, "start");
         mainCards.add(mainPanel, "game");
+        mainCards.add(miniGame, "MiniGame");
         JPanel home = new JPanel();
         home.add(mainCards);
         layout.show(mainCards, "start");
@@ -70,6 +75,13 @@ public class MainFrame extends JFrame {
 
     private JPanel createInstructionsPanel() {
         JPanel res = new InstructionsPanel(this);
+        res.setPreferredSize(new Dimension(900, 700));
+        res.setFocusable(true);
+        return res;
+    }
+    
+    private JPanel createMiniGamePanel() {
+        JPanel res = new Minigame(this);
         res.setPreferredSize(new Dimension(900, 700));
         res.setFocusable(true);
         return res;
