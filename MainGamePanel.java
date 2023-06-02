@@ -13,6 +13,8 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     private long upgradeClickPrice = 10L;
     private Timer timer;
     private long money;
+    private boolean canWin = false;
+    private boolean hasWon = false;
     private int xSlide;
     private int numUnlocked = 1;
     private List<Business> businesses;
@@ -24,7 +26,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(20, this);
-        money = 0L;
+        money = 100000000000000L;
         timer.start();
         insideHomeButton = false;
         businesses = List.of(
@@ -43,6 +45,15 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (hasWon) {
+            GameUtils.drawImage("StartScreenUp1.png", g);
+            g.setFont(new Font("Teko", Font.BOLD, 60));
+            g.drawString("CONGRATS!", 320, 300);
+            g.setFont(new Font("Teko", Font.BOLD, 30));
+            g.drawString("You are a masterful moneymaker", 200, 560);
+            g.drawString("You are the richest person in the world!", 160, 640);
+            return;
+        }
         g.setColor(new Color(27, 133, 3, 123));
         g.fillRect(0, 0, 50, 50);
         GameUtils.drawImage("homeLogo.png", g, 50, 50);
@@ -54,6 +65,17 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.fillRect(200, 75, 200, 75);
         g.fillRect(450, 75, 200, 75);
         g.fillRect(800, 100, 100, 75);
+        if (money >= 1_000_000_000_000L) {
+            g.fillRect(150, 600, 600, 75);
+            g.setColor(new Color(0, 0, 0));
+            canWin = true;
+            g.drawString("Win Game!", 350, 650);
+        } else {
+            g.setColor(new Color(100, 100, 100));
+            g.fillRect(150, 600, 600, 75);
+            g.setColor(new Color(0, 0, 0));
+            g.drawString("Need $1T to win", 270, 650);
+        }
         g.setColor(new Color(0, 0, 0));
         g.setFont(new Font("Teko", Font.PLAIN, 15));
 
@@ -71,7 +93,11 @@ public class MainGamePanel extends GamePanel implements ActionListener {
 
     public void increaseMoney(long change) {
         money += change;
-        repaint(0, 0, 600, 100);
+        repaint(0, 0, 900, 100);
+        if (money >= 1_000_000_000_000L) {
+            repaint(0, 500, 900, 100);
+            canWin = true;
+        }
     }
 
     public static void setPaused(boolean b) {
@@ -135,12 +161,18 @@ public class MainGamePanel extends GamePanel implements ActionListener {
                 moneyPerClick += 1 + 0.35 * moneyPerClick;
             }
         }
+        if (GameUtils.isInside(e, 150, 750, 600, 675) && canWin) {
+            hasWon = true;
+            repaint();
+        }
         for (Business b : businesses) {
             if (b.isUnlocked()) {
                 if (!b.isBought() && b.isInsideBuy(e) && money >= b.getPrice()) {
                     b.setBought();
                     money -= b.getPrice();
-                    businesses.get(numUnlocked++).unlock();
+                    if (numUnlocked < businesses.size()) {
+                        businesses.get(numUnlocked++).unlock();
+                    }
                 } else if (b.isInsideBuy(e) && money >= b.getUpgradePrice()) {
                     b.upgrade();
                 }
@@ -148,8 +180,8 @@ public class MainGamePanel extends GamePanel implements ActionListener {
                     b.setSliding();
                 }
                 if (!b.managerBought && b.isInsideManager(e)) {
-                    if (money >= b.getPrice() * 10) {
-                        money -= b.getPrice() * 10;
+                    if (money >= b.getPrice() * 13) {
+                        money -= b.getPrice() * 13;
                         b.managerBought = true;
                     }
                 }

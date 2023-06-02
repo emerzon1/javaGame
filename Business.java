@@ -104,13 +104,16 @@ public class Business {
         if (bought && !managerBought) {
             g.fillRect(xPos, yPos - 30, 100, 25);
             g.setColor(new Color(0, 0, 0));
-            g.drawString("Manager: $" + GameUtils.format(price * 10), xPos + 10, yPos - 15);
+            g.drawString("Manager: $" + GameUtils.format(price * 13), xPos + 10, yPos - 15);
         }
         g.setColor(new Color(0, 0, 0));
         g.setFont(GameUtils.buttonFont);
         g.drawString(bought ? "Upgrade" : "Buy", xPos + (bought ? 192 : 220), yPos + 50);
         g.setFont(new Font("Teko", Font.PLAIN, 10));
         g.drawString("Price: " + GameUtils.format(bought ? upgrade : price), xPos + 185, yPos + 90);
+        if (bought) {
+            g.drawString("$" + GameUtils.format(money) + " / fill", xPos + 10, yPos + 90);
+        }
         if (isSliding) {
             g.setColor(new Color(255, 0, 0));
             g.fillRect(xPos, yPos, (175 * timePassed) / time, 75);
