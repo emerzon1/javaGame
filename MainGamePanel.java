@@ -12,7 +12,8 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     private long moneyPerClick = 1L;
     private long upgradeClickPrice = 10L;
     private Timer timer;
-    private long money;
+    private boolean smUnlocked = false;
+    public long money;
     private boolean canWin = false;
     private boolean hasWon = false;
     private int xSlide;
@@ -26,16 +27,16 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(20, this);
-        money = 100000000000000L;
+        money = 99000000099L;
         timer.start();
         insideHomeButton = false;
         businesses = List.of(
-                new Business("Lemonade", 100, false, 25, 200, 300, this, true),
-                new Business("Bus2", 1000, false, 25, 350, 500, this),
-                new Business("Bus3", 10000, false, 25, 500, 1000, this),
-                new Business("Bus4", 100000, false, 450, 200, 2000, this),
-                new Business("Bus5", 1000000, false, 450, 350, 3500, this),
-                new Business("Bus6", 10000000, false, 450, 500, 5000, this));
+                new Business(100, false, 25, 200, 300, this, true),
+                new Business(1000, false, 25, 350, 500, this),
+                new Business(10000, false, 25, 500, 1000, this),
+                new Business(100000, false, 450, 200, 2000, this),
+                new Business(1000000, false, 450, 350, 3500, this),
+                new Business(10000000, false, 450, 500, 5000, this));
     }
 
     public void repaintHome() {
@@ -64,7 +65,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.setColor(new Color(211, 237, 12));
         g.fillRect(200, 75, 200, 75);
         g.fillRect(450, 75, 200, 75);
-        g.fillRect(800, 100, 100, 75);
+        g.fillRect(800, 100, 95, 75);
         if (money >= 1_000_000_000_000L) {
             g.fillRect(150, 600, 600, 75);
             g.setColor(new Color(0, 0, 0));
@@ -76,6 +77,11 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             g.setColor(new Color(0, 0, 0));
             g.drawString("Need $1T to win", 270, 650);
         }
+        g.setColor(new Color(100, 100, 100));
+        if (smUnlocked) {
+            g.setColor(new Color(211, 237, 12));
+        }
+        g.fillRect(800, 275, 95, 75); // stock market
         g.setColor(new Color(0, 0, 0));
         g.setFont(new Font("Teko", Font.PLAIN, 15));
 
@@ -88,7 +94,8 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             b.draw(g);
         }
 
-        g.drawString("Play Minigame", 825, 110);
+        g.drawString("Play Minigame", 810, 110);
+        g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $10K", 810 + (smUnlocked ? 10 : 0), 285);
     }
 
     public void increaseMoney(long change) {
@@ -97,6 +104,10 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         if (money >= 1_000_000_000_000L) {
             repaint(0, 500, 900, 100);
             canWin = true;
+        }
+        if (money >= 10000 && !smUnlocked) {
+            smUnlocked = true;
+            repaint(600, 100, 300, 500);
         }
     }
 
@@ -148,7 +159,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             setPaused(true);
         }
         if (insideClickButton && GameUtils.isInside(e, 200, 400, 75, 150)) {
-            money += moneyPerClick;
+            increaseMoney(moneyPerClick);
         }
         if (GameUtils.isInside(e, 800, 900, 100, 175) && insideMiniGame) {
             navigateTo("MiniGame");
@@ -156,7 +167,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
         if (GameUtils.isInside(e, 450, 650, 75, 150)) {
             if (money >= upgradeClickPrice) {
-                money -= upgradeClickPrice;
+                increaseMoney(-1 * upgradeClickPrice);
                 upgradeClickPrice *= 1.8;
                 moneyPerClick += 1 + 0.35 * moneyPerClick;
             }
@@ -164,6 +175,10 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         if (GameUtils.isInside(e, 150, 750, 600, 675) && canWin) {
             hasWon = true;
             repaint();
+        }
+        if (smUnlocked && GameUtils.isInside(e, 800, 895, 275, 350)) {
+            navigateTo("stockMarket");
+            setPaused(true);
         }
         for (Business b : businesses) {
             if (b.isUnlocked()) {

@@ -17,8 +17,9 @@ public class MainFrame extends JFrame {
     public CardLayout layout;
     private JPanel instructionsPanel;
     private JPanel startPanel;
-    private JPanel mainPanel;
+    public JPanel mainPanel;
     private JPanel miniGame;
+    private JPanel stockMarket;
     public JPanel mainCards;
 
     private static Clip music;
@@ -32,15 +33,19 @@ public class MainFrame extends JFrame {
         mainPanel = createMainPanel();
         layout = new CardLayout();
         miniGame = createMiniGamePanel();
+        stockMarket = createStockMarketPanel();
 
         mainCards = new JPanel(layout);
         mainCards.add(instructionsPanel, "instructions");
         mainCards.add(startPanel, "start");
         mainCards.add(mainPanel, "game");
         mainCards.add(miniGame, "MiniGame");
+        mainCards.add(stockMarket, "stockMarket");
+
         JPanel home = new JPanel();
         home.add(mainCards);
-        layout.show(mainCards, "start");
+        // layout.show(mainCards, "start");
+        layout.show(mainCards, "stockMarket");
         frame.getContentPane().add(home);
 
         try {
@@ -79,10 +84,18 @@ public class MainFrame extends JFrame {
         res.setFocusable(true);
         return res;
     }
-    
+
     private JPanel createMiniGamePanel() {
         JPanel res = new Minigame(this);
         res.setPreferredSize(new Dimension(900, 700));
+        res.setFocusable(true);
+        return res;
+    }
+
+    private JPanel createStockMarketPanel() {
+        JPanel res = new StockMarket(this);
+        res.setPreferredSize(new Dimension(900, 700));
+        res.setBackground(new Color(50, 232, 8));
         res.setFocusable(true);
         return res;
     }

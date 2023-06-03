@@ -1,6 +1,8 @@
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Transparency;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,12 +14,19 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 public class GameUtils {
     private static Map<String, BufferedImage> images = new HashMap<>();
 
     private GameUtils() {
-
+        BufferedImage background = null;
+        try {
+            background = ImageIO.read(new File("./images/moneyMini.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        images.put("moneyMini", background);
     }
 
     public static boolean isInside(MouseEvent e, int startX, int endX, int startY, int endY) {
@@ -26,11 +35,15 @@ public class GameUtils {
 
     public static void drawImage(String image, Graphics g) {
         BufferedImage background = null;
-        try {
-            background = ImageIO.read(new File("./images/" + image));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!images.containsKey(image)) {
+            try {
+                background = ImageIO.read(new File("./images/" + image));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            images.put(image, background);
         }
+        background = images.get(image);
         g.drawImage(background, 0, 0, null);
     }
 
@@ -94,7 +107,46 @@ public class GameUtils {
         g.drawImage(background, x, y, null);
     }
 
+    public static BufferedImage rotateMoney(int degree) {
+        BufferedImage background = null;
+        if (!images.containsKey("moneyMini")) {
+            try {
+                background = ImageIO.read(new File("./images/moneyMini.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            images.put("moneyMini", background);
+        }
+        double deg = Math.toRadians(degree);
+        BufferedImage bufImg = images.get("moneyMini");
+        double sin = Math.abs(Math.sin(deg)), cos = Math.abs(Math.cos(deg));
+        int w = bufImg.getWidth(), h = bufImg.getHeight();
+        int neww = (int) Math.floor(w * cos + h * sin), newh = (int) Math.floor(h * cos + w * sin);
+        BufferedImage result = new BufferedImage(neww, newh, Transparency.TRANSLUCENT);
+        Graphics2D g = result.createGraphics();
+        g.translate((neww - w) / 2, (newh - h) / 2);
+        g.rotate(deg, w / 2, h / 2);
+        g.drawRenderedImage(bufImg, null);
+        g.dispose();
+        return result;
+    }
+
     public static void drawImage(String image, Graphics g, int width, int height, int x, int y) {
+        BufferedImage background = null;
+        if (!images.containsKey(image)) {
+            System.out.println("not cached");
+            try {
+                background = ImageIO.read(new File("./images/" + image));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            images.put(image, background);
+        }
+        background = images.get(image);
+        g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, null);
+    }
+
+    public static void drawImage(String image, Graphics g, int width, int height, int x, int y, JPanel observer) {
         BufferedImage background = null;
         if (!images.containsKey(image)) {
             try {
@@ -105,7 +157,7 @@ public class GameUtils {
             images.put(image, background);
         }
         background = images.get(image);
-        g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, null);
+        g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, observer);
     }
 
     public static final Font buttonFont = new Font("Teko", Font.PLAIN, 30);

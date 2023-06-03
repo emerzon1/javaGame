@@ -7,10 +7,10 @@ public class Business {
     private long money;
     private boolean bought;
     private boolean unlocked;
-    private String name;
     private int xPos, yPos;
     public boolean isSliding;
     public boolean wasSliding;
+    private boolean isMaxSpeed = false;
     private int level = 1;
     public boolean managerBought = false;
     private int time;
@@ -55,9 +55,8 @@ public class Business {
         return yPos;
     }
 
-    public Business(String n, long p, boolean b, int x, int y, int time, MainGamePanel g) {
+    public Business(long p, boolean b, int x, int y, int time, MainGamePanel g) {
         super();
-        name = n;
         xPos = x;
         yPos = y;
         price = p;
@@ -68,9 +67,8 @@ public class Business {
         defaultStuff();
     }
 
-    public Business(String n, int p, boolean b, int x, int y, int time, MainGamePanel g, boolean unlocked) {
+    public Business(int p, boolean b, int x, int y, int time, MainGamePanel g, boolean unlocked) {
         super();
-        name = n;
         xPos = x;
         yPos = y;
         price = p;
@@ -110,14 +108,18 @@ public class Business {
         g.setFont(GameUtils.buttonFont);
         g.drawString(bought ? "Upgrade" : "Buy", xPos + (bought ? 192 : 220), yPos + 50);
         g.setFont(new Font("Teko", Font.PLAIN, 10));
-        g.drawString("Price: " + GameUtils.format(bought ? upgrade : price), xPos + 185, yPos + 90);
+        g.drawString("Price: $" + GameUtils.format(bought ? upgrade : price), xPos + 185, yPos + 90);
         if (bought) {
             g.drawString("$" + GameUtils.format(money) + " / fill", xPos + 10, yPos + 90);
         }
         if (isSliding) {
-            g.setColor(new Color(255, 0, 0));
-            g.fillRect(xPos, yPos, (175 * timePassed) / time, 75);
-            g.setColor(new Color(0, 0, 0));
+            if (isMaxSpeed) {
+                g.fillRect(xPos, yPos, 175, 75);
+            } else {
+                g.setColor(new Color(255, 0, 0));
+                g.fillRect(xPos, yPos, (175 * timePassed) / time, 75);
+                g.setColor(new Color(0, 0, 0));
+            }
         } else {
             wasSliding = false;
         }
@@ -166,11 +168,14 @@ public class Business {
             return;
         }
         container.increaseMoney(-1 * upgrade);
-        money *= 1.2;
+        money *= 1.3;
         upgrade *= 1.2;
         level++;
         if (level % 20 == 0) {
             time = (int) Math.round(time * 0.80 / 10) * 10;
+            if (time < 100) {
+                isMaxSpeed = true;
+            }
         }
     }
 

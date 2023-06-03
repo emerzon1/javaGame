@@ -1,15 +1,31 @@
 
+import java.util.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
-public class StartPanel extends GamePanel {
+import javax.swing.Timer;
+
+public class StartPanel extends GamePanel implements ActionListener {
     private boolean insideS = false;// true when Mouse is in start Box
     private boolean insideI = false;// True when Mouse is in Instructions Box
     private boolean clickedI = false;
     private boolean clickedS = false;
+    private int numShowing = 10;
+    private Timer t = new Timer(10, this);
+    private ArrayList<Point> money;
 
     public StartPanel(MainFrame c) {
         super(c);
+        money = new ArrayList<Point>();
+        for (int i = 0; i < 5; i++) {
+            for (int j = -600; j <= 0; j += 150) {
+                money.add(new Point((int) (Math.random() * 900), j + ((int) (Math.random() * 200) - 100),
+                        (int) (Math.random() * 360)));
+            }
+        }
+        t.start();
     }
 
     @Override
@@ -34,6 +50,10 @@ public class StartPanel extends GamePanel {
         g.setFont(GameUtils.buttonFont);
         g.drawString("Start", 410, 330);// Start Text
         g.drawString("Instructions", 360, 465);
+
+        for (Point p : money) {
+            g.drawImage(GameUtils.rotateMoney((int) p.rot), p.x, p.y, null);
+        }
     }
 
     @Override
@@ -73,6 +93,45 @@ public class StartPanel extends GamePanel {
             insideI = true;
         }
         repaint();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        for (Point p : money) {
+            p.y++;
+            if (p.y >= 600) {
+                p.y -= 600;
+            }
+            if (p.rot >= 50) {
+                p.movingUp = false;
+            } else if (p.rot <= -50) {
+                p.movingUp = true;
+            }
+            if (p.movingUp) {
+                p.rot += .75;
+            } else {
+                p.rot -= .75;
+            }
+            // if (p.rot < 0) {
+            // p.rot += 360;
+            // }
+        }
+        repaint();
+    }
+
+    public class Point {
+
+        public Point(int a, int b, int c) {
+            x = a;
+            y = b;
+            rot = c;
+        }
+
+        public int x;
+        public int y;
+        public double rot;
+        public boolean movingUp = true;
     }
 
 }
