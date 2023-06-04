@@ -9,8 +9,8 @@ public class StockMarket extends GamePanel implements ActionListener {
     private List<Double> oilHistory;
     private List<Double> goldHistory;
     private List<Double> diamondHistory;
-    private int[] sharesBought = new int[] { 0, 0, 0 };
-    private double[] avgPrice = new double[] { 0.0, 0.0, 0.0 };
+    private long[] sharesBought = new long[] { 0L, 0L, 0L };
+    private double[] sumPrice = new double[] { 0.0, 0.0, 0.0 };
     private String selected = "oil";
     private int ind = 0;
 
@@ -20,8 +20,8 @@ public class StockMarket extends GamePanel implements ActionListener {
         diamondHistory = new ArrayList<>();
         goldHistory = new ArrayList<>();
         oilHistory.add(10.0);
-        goldHistory.add(500.0);
-        diamondHistory.add(3000.0);
+        goldHistory.add(1000.0);
+        diamondHistory.add(100000.0);
         for (int i = 0; i < 30; i++) {
             createNewStat();
         }
@@ -115,9 +115,18 @@ public class StockMarket extends GamePanel implements ActionListener {
                 650);
 
         g.drawString(
-                selected.substring(0, 1).toUpperCase() + selected.substring(1) + " shares bought: " + sharesBought[ind],
+                selected.substring(0, 1).toUpperCase() + selected.substring(1) + " shares bought: "
+                        + GameUtils.format(sharesBought[ind]),
                 550, 135);
-        g.drawString(String.format("Average original price of shares: $%.2f", avgPrice[ind]), 450, 180);
+        if (sharesBought[ind] > 0) {
+            g.drawString(
+                    String.format("Average original price of shares: $%s",
+                            (sumPrice[ind] / sharesBought[ind] > 10000)
+                                    ? GameUtils.format((long) (sumPrice[ind] / sharesBought[ind]))
+                                    : String.format("%,.2f", sumPrice[ind] / sharesBought[ind])),
+                    450,
+                    180);
+        }
         g.drawString("Sell All", 640, 210);
         drawGraph(g);
     }
@@ -182,7 +191,7 @@ public class StockMarket extends GamePanel implements ActionListener {
         }
 
         g.setFont(new Font("Teko", Font.PLAIN, 20));
-        g.drawString(String.format("Current Price: $%.2f", hist.get(hist.size() - 1)),
+        g.drawString(String.format("Current Price: $%,.2f", hist.get(hist.size() - 1)),
                 190, 90);
         if (hist.size() > 30) {
             double avg = 0.0;
@@ -193,9 +202,9 @@ public class StockMarket extends GamePanel implements ActionListener {
                 high = Math.max(high, hist.get(i));
                 low = Math.min(low, hist.get(i));
             }
-            g.drawString(String.format("30 Day Rolling Average: $%.2f", avg / 30), 190, 115);
-            g.drawString(String.format("30 Day High: $%.2f", high), 190, 140);
-            g.drawString(String.format("30 Day Low: $%.2f", low), 190, 165);
+            g.drawString(String.format("30 Day Rolling Average: $%,.2f", avg / 30), 190, 115);
+            g.drawString(String.format("30 Day High: $%,.2f", high), 190, 140);
+            g.drawString(String.format("30 Day Low: $%,.2f", low), 190, 165);
 
         }
     }
@@ -235,54 +244,49 @@ public class StockMarket extends GamePanel implements ActionListener {
         if (GameUtils.isInside(e, 50, 200, 610, 685) && money > sharePrice) {
             main.increaseMoney((long) (-1 * sharePrice));
             sharesBought[ind]++;
-            avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
+            sumPrice[ind] += sharePrice;
             repaint();
         } else if (GameUtils.isInside(e, 250, 400, 610, 685)) {
             long quarterShares = (long) (money / 4 / sharePrice);
             main.increaseMoney((long) (-1 * sharePrice * quarterShares));
-            for (int i = 0; i < quarterShares; i++) {
-                sharesBought[ind]++;
-                avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
-            }
+            sharesBought[ind] += quarterShares;
+            sumPrice[ind] += sharePrice * quarterShares;
             repaint();
         } else if (GameUtils.isInside(e, 450, 600, 610, 685)) {
             long halfShares = (long) (money / 2 / sharePrice);
             main.increaseMoney((long) (-1 * sharePrice * halfShares));
-            for (int i = 0; i < halfShares; i++) {
-                sharesBought[ind]++;
-                avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
-            }
+            sharesBought[ind] += halfShares;
+            sumPrice[ind] += sharePrice * halfShares;
             repaint();
         } else if (GameUtils.isInside(e, 650, 800, 610, 685)) {
             long allShares = (long) (money / sharePrice);
             main.increaseMoney((long) (-1 * sharePrice * allShares));
-            for (int i = 0; i < allShares; i++) {
-                sharesBought[ind]++;
-                avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
-            }
+            sharesBought[ind] += allShares;
+            sumPrice[ind] += sharePrice * allShares;
             repaint();
         }
 
         if (GameUtils.isInside(e, 605, 755, 190, 265)) {
             main.increaseMoney((long) (sharePrice * sharesBought[ind]));
             sharesBought[ind] = 0;
-            avgPrice[ind] = 0;
+            sumPrice[ind] = 0;
             repaint();
         }
     }
 
     public void createNewStat() {
         oilHistory.add(
-                Math.max(oilHistory.get(oilHistory.size() - 1) * (1 + ((Math.random() - 0.50) / 5)), 0));
+                Math.max(oilHistory.get(oilHistory.size() - 1) * (1 + ((Math.random() - 0.505) / 5)), 1));
         goldHistory.add(
                 Math.max(goldHistory.get(goldHistory.size() - 1)
-                        * (1 + ((Math.random() - (goldHistory.get(goldHistory.size() - 1) > 5000 ? 0.52 : 0.49)) / 4)),
-                        0));
+                        * (1 + ((Math.random() - (goldHistory.get(goldHistory.size() - 1) > 50000 ? 0.51 : 0.49)) / 4)),
+                        1));
         diamondHistory.add(
                 Math.max(diamondHistory.get(diamondHistory.size() - 1)
-                        * (1 + ((Math.random() - (diamondHistory.get(diamondHistory.size() - 1) > 30000 ? 0.53 : 0.48))
+                        * (1 + ((Math.random()
+                                - (diamondHistory.get(diamondHistory.size() - 1) > 3000000 ? 0.52 : 0.45))
                                 / 1.5)),
-                        0));
+                        1));
     }
 
     @Override

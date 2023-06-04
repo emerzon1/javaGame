@@ -27,16 +27,16 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(20, this);
-        money = 9999L;
+        money = 0L;
         timer.start();
         insideHomeButton = false;
         businesses = List.of(
-                new Business(100, false, 25, 200, 300, this, true),
-                new Business(1000, false, 25, 350, 500, this),
-                new Business(10000, false, 25, 500, 1000, this),
-                new Business(100000, false, 450, 200, 2000, this),
-                new Business(1000000, false, 450, 350, 3500, this),
-                new Business(10000000, false, 450, 500, 5000, this));
+                new Business(100, false, 25, 200, 300, this, true, 0),
+                new Business(5000, false, 25, 350, 500, this, 1),
+                new Business(30000, false, 25, 500, 1000, this, 2),
+                new Business(500000, false, 450, 200, 2000, this, 3),
+                new Business(9000000, false, 450, 350, 3500, this, 4),
+                new Business(100000000, false, 450, 500, 5000, this, 5));
     }
 
     public void repaintHome() {
@@ -66,7 +66,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.fillRect(200, 75, 200, 75);
         g.fillRect(450, 75, 200, 75);
         g.fillRect(800, 100, 95, 75);
-        if (money >= 1_000_000_000_000L) {
+        if (money >= 10_000_000_000_000L) {
             g.fillRect(150, 600, 600, 75);
             g.setColor(new Color(0, 0, 0));
             canWin = true;
@@ -75,7 +75,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             g.setColor(new Color(100, 100, 100));
             g.fillRect(150, 600, 600, 75);
             g.setColor(new Color(0, 0, 0));
-            g.drawString("Need $1T to win", 270, 650);
+            g.drawString("Need $10T to win", 270, 650);
         }
         g.setColor(new Color(100, 100, 100));
         if (smUnlocked) {
@@ -95,17 +95,17 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
 
         g.drawString("Play Minigame", 810, 110);
-        g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $1K", 810 + (smUnlocked ? 10 : 0), 285);
+        g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $10K", 810 + (smUnlocked ? 10 : 0), 285);
     }
 
     public void increaseMoney(long change) {
         money += change;
         repaint(0, 0, 900, 100);
-        if (money >= 1_000_000_000_000L) {
+        if (money >= 10_000_000_000_000L) {
             repaint(0, 500, 900, 100);
             canWin = true;
         }
-        if (money >= 1000 && !smUnlocked) {
+        if (money >= 10000 && !smUnlocked) {
             smUnlocked = true;
             repaint(600, 100, 300, 500);
         }
@@ -123,7 +123,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         for (Business b : businesses) {
             if (b.isUnlocked() && b.wasSliding) {
                 b.tick();
-                repaint(b.getXBounds(), b.getYBounds(), 175, 75);
+                repaint(b.getXBounds(), b.getYBounds(), (175 * b.timePassed) / b.time + 10, 75);
             }
         }
     }

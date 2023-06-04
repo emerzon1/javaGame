@@ -13,9 +13,10 @@ public class Business {
     private boolean isMaxSpeed = false;
     private int level = 1;
     public boolean managerBought = false;
-    private int time;
-    private int timePassed;
+    public int time;
+    public int timePassed;
     private MainGamePanel container;
+    private int busNum;
 
     public void tick() {
         if (isSliding) {
@@ -55,7 +56,7 @@ public class Business {
         return yPos;
     }
 
-    public Business(long p, boolean b, int x, int y, int time, MainGamePanel g) {
+    public Business(long p, boolean b, int x, int y, int time, MainGamePanel g, int ind) {
         super();
         xPos = x;
         yPos = y;
@@ -64,10 +65,11 @@ public class Business {
         container = g;
         this.time = time;
         isSliding = false;
+        busNum = ind;
         defaultStuff();
     }
 
-    public Business(int p, boolean b, int x, int y, int time, MainGamePanel g, boolean unlocked) {
+    public Business(int p, boolean b, int x, int y, int time, MainGamePanel g, boolean unlocked, int ind) {
         super();
         xPos = x;
         yPos = y;
@@ -77,12 +79,13 @@ public class Business {
         this.time = time;
         isSliding = false;
         this.unlocked = unlocked;
+        busNum = ind;
         defaultStuff();
     }
 
     public void defaultStuff() {
+        money = price / (10 - busNum);
         upgrade = (long) (price * 1.2);
-        money = price / 10;
     }
 
     public void draw(Graphics g) {
@@ -168,14 +171,17 @@ public class Business {
             return;
         }
         container.increaseMoney(-1 * upgrade);
-        money *= 1.3;
-        upgrade *= 1.2;
+        money *= 1.3 + (0.03 * busNum);
+        upgrade *= 1.4;
         level++;
         if (level % 20 == 0) {
             time = (int) Math.round(time * 0.80 / 10) * 10;
             if (time < 100) {
                 isMaxSpeed = true;
             }
+        }
+        if (level % 10 == 0) {
+            money *= 2 + (.5 * busNum);
         }
     }
 

@@ -161,5 +161,17 @@ public class GameUtils {
     }
 
     public static final Font buttonFont = new Font("Teko", Font.PLAIN, 30);
-    public static final String INSTRUCTIONS = "Welcome to Money Moves. Your goal is to grow your business and make as much money as possible";
+    public static final String INSTRUCTIONS = "Welcome to Money Moves. Your goal is to grow your business and make asmuch money as possible.  You start with $0 and win when you get to onetrillion dollars.  "
+            +
+            "At the beginning, you can gain money by clicking a button, but you won't make much from that.  You should upgrade this inthe beginning to get enough money to buy your first business.  "
+            +
+            "As you get more and more money, you can invest in better businesses.  Click  the bar to the side to start working, "
+            +
+            "and when the red progress bar   fills up, you will get paid.  When you get enough money, you can hire a manager so that you don't have to manually click each time you want to start working."
+            +
+            "  Upgrade the businesses to make more money each     payout day. Every 10 levels, the business will get a big boost.  Twiceduring your journey, you are allowed to play the minigame, which will 10x your money on successful completion.  "
+            +
+            "There  is also an in-game   market, which unlocks when you reach $10,000. You can invest your     money in commodities (oil, gold, or diamond).  Oil is the cheapest andleast volatile.  "
+            +
+            "Gold is generally more expensive and riskier, and    diamond is the riskiest and most expensive.  Good luck!";
 }
