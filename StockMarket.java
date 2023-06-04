@@ -117,7 +117,7 @@ public class StockMarket extends GamePanel implements ActionListener {
         g.drawString(
                 selected.substring(0, 1).toUpperCase() + selected.substring(1) + " shares bought: " + sharesBought[ind],
                 550, 135);
-        g.drawString(String.format("Average buying price of shares: $%.2f", avgPrice[ind]), 450, 180);
+        g.drawString(String.format("Average original price of shares: $%.2f", avgPrice[ind]), 450, 180);
         g.drawString("Sell All", 640, 210);
         drawGraph(g);
     }

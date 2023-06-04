@@ -95,7 +95,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
 
         g.drawString("Play Minigame", 810, 110);
-        g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $10K", 810 + (smUnlocked ? 10 : 0), 285);
+        g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $1K", 810 + (smUnlocked ? 10 : 0), 285);
     }
 
     public void increaseMoney(long change) {
@@ -105,7 +105,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             repaint(0, 500, 900, 100);
             canWin = true;
         }
-        if (money >= 10000 && !smUnlocked) {
+        if (money >= 1000 && !smUnlocked) {
             smUnlocked = true;
             repaint(600, 100, 300, 500);
         }

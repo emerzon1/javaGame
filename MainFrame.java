@@ -45,7 +45,6 @@ public class MainFrame extends JFrame {
         JPanel home = new JPanel();
         home.add(mainCards);
         layout.show(mainCards, "start");
-        // layout.show(mainCards, "stockMarket");
         frame.getContentPane().add(home);
 
         try {
