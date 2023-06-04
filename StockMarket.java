@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 public class StockMarket extends GamePanel implements ActionListener {
-    private Timer t = new Timer(4000, this);
+    private Timer t = new Timer(2000, this);
     private List<Double> oilHistory;
     private List<Double> goldHistory;
     private List<Double> diamondHistory;
+    private int[] sharesBought = new int[] { 0, 0, 0 };
+    private double[] avgPrice = new double[] { 0.0, 0.0, 0.0 };
     private String selected = "oil";
+    private int ind = 0;
 
     public StockMarket(MainFrame f) {
         super(f);
@@ -37,14 +40,14 @@ public class StockMarket extends GamePanel implements ActionListener {
         g.setFont(new Font("Teko", Font.BOLD, 40));
         g.drawString("Money: $" + GameUtils.format(((MainGamePanel) container.mainPanel).money), 330, 40);
 
-        int ind = 1;
+        int index = 1;
         for (String s : List.of("oil", "gold", "diamond")) {
             if (s.equals(selected)) {
-                GameUtils.drawImage(s + "Blue.png", g, 100, 90, 25, ind * 150, this);
+                GameUtils.drawImage(s + "Blue.png", g, 100, 90, 25, index * 150, this);
             } else {
-                GameUtils.drawImage(s + "Norm.png", g, 100, 90, 25, ind * 150, this);
+                GameUtils.drawImage(s + "Norm.png", g, 100, 90, 25, index * 150, this);
             }
-            ind++;
+            index++;
         }
         List<Double> history = getHistoryList(selected);
         double currPrice = history.get(history.size() - 1);
@@ -71,6 +74,11 @@ public class StockMarket extends GamePanel implements ActionListener {
             g.setColor(new Color(100, 100, 100));
         }
         g.fillRect(650, 610, 150, 75);
+        g.setColor(new Color(211, 237, 12));
+        if (sharesBought[ind] == 0) {
+            g.setColor(new Color(100, 100, 100));
+        }
+        g.fillRect(605, 190, 150, 75);
         g.setColor(Color.BLACK);
         g.drawString("Invest: ", 400, 600);
         g.setFont(new Font("Teko", Font.BOLD, 20));
@@ -78,7 +86,9 @@ public class StockMarket extends GamePanel implements ActionListener {
         g.drawString(String.format("($%.2f)", currPrice),
                 85 - (currPrice > 1000 ? 20 : 0), 650);
         g.drawString("50% of money", 455, 630);
-        g.drawString(String.format("%s shares", (halfShares > 10000 ? GameUtils.format(halfShares) : halfShares + "")),
+        g.drawString(
+                String.format("%s share%s", (halfShares > 10000 ? GameUtils.format(halfShares) : halfShares + ""),
+                        halfShares == 1 ? "" : "s"),
                 455,
                 650);
         g.drawString(String.format("($%s)",
@@ -87,8 +97,9 @@ public class StockMarket extends GamePanel implements ActionListener {
                 455, 670);
         g.drawString("25% of money", 255, 630);
         g.drawString(
-                String.format("%s shares",
-                        (quarterShares > 10000 ? GameUtils.format(quarterShares) : quarterShares + "")),
+                String.format("%s share%s",
+                        (quarterShares > 10000 ? GameUtils.format(quarterShares) : quarterShares + ""),
+                        quarterShares == 1 ? "" : "s"),
                 255,
                 650);
         g.drawString(String.format("($%s)",
@@ -97,10 +108,17 @@ public class StockMarket extends GamePanel implements ActionListener {
                 255, 670);
         g.drawString("Max", 660, 630);
         g.drawString(
-                String.format("%s shares",
-                        (allShares > 10000 ? GameUtils.format(allShares) : allShares + "")),
+                String.format("%s share%s",
+                        (allShares > 10000 ? GameUtils.format(allShares) : allShares + ""),
+                        allShares == 1 ? "" : "s"),
                 660,
                 650);
+
+        g.drawString(
+                selected.substring(0, 1).toUpperCase() + selected.substring(1) + " shares bought: " + sharesBought[ind],
+                550, 135);
+        g.drawString(String.format("Average buying price of shares: $%.2f", avgPrice[ind]), 450, 180);
+        g.drawString("Sell All", 640, 210);
         drawGraph(g);
     }
 
@@ -165,7 +183,7 @@ public class StockMarket extends GamePanel implements ActionListener {
 
         g.setFont(new Font("Teko", Font.PLAIN, 20));
         g.drawString(String.format("Current Price: $%.2f", hist.get(hist.size() - 1)),
-                550, 90);
+                190, 90);
         if (hist.size() > 30) {
             double avg = 0.0;
             double high = Double.MIN_VALUE;
@@ -175,9 +193,9 @@ public class StockMarket extends GamePanel implements ActionListener {
                 high = Math.max(high, hist.get(i));
                 low = Math.min(low, hist.get(i));
             }
-            g.drawString(String.format("30 Day Rolling Average: $%.2f", avg / 30), 550, 115);
-            g.drawString(String.format("30 Day High: $%.2f", high), 550, 140);
-            g.drawString(String.format("30 Day Low: $%.2f", low), 550, 165);
+            g.drawString(String.format("30 Day Rolling Average: $%.2f", avg / 30), 190, 115);
+            g.drawString(String.format("30 Day High: $%.2f", high), 190, 140);
+            g.drawString(String.format("30 Day Low: $%.2f", low), 190, 165);
 
         }
     }
@@ -200,12 +218,55 @@ public class StockMarket extends GamePanel implements ActionListener {
         }
         if (GameUtils.isInside(e, 25, 125, 150, 250)) {
             selected = "oil";
+            ind = 0;
             repaint();
         } else if (GameUtils.isInside(e, 25, 125, 300, 400)) {
             selected = "gold";
+            ind = 1;
             repaint();
         } else if (GameUtils.isInside(e, 25, 125, 450, 550)) {
             selected = "diamond";
+            ind = 2;
+            repaint();
+        }
+        MainGamePanel main = (MainGamePanel) (container.mainPanel);
+        long money = main.money;
+        double sharePrice = getHistoryList(selected).get(getHistoryList(selected).size() - 1);
+        if (GameUtils.isInside(e, 50, 200, 610, 685) && money > sharePrice) {
+            main.increaseMoney((long) (-1 * sharePrice));
+            sharesBought[ind]++;
+            avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
+            repaint();
+        } else if (GameUtils.isInside(e, 250, 400, 610, 685)) {
+            long quarterShares = (long) (money / 4 / sharePrice);
+            main.increaseMoney((long) (-1 * sharePrice * quarterShares));
+            for (int i = 0; i < quarterShares; i++) {
+                sharesBought[ind]++;
+                avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
+            }
+            repaint();
+        } else if (GameUtils.isInside(e, 450, 600, 610, 685)) {
+            long halfShares = (long) (money / 2 / sharePrice);
+            main.increaseMoney((long) (-1 * sharePrice * halfShares));
+            for (int i = 0; i < halfShares; i++) {
+                sharesBought[ind]++;
+                avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
+            }
+            repaint();
+        } else if (GameUtils.isInside(e, 650, 800, 610, 685)) {
+            long allShares = (long) (money / sharePrice);
+            main.increaseMoney((long) (-1 * sharePrice * allShares));
+            for (int i = 0; i < allShares; i++) {
+                sharesBought[ind]++;
+                avgPrice[ind] = avgPrice[ind] + ((sharePrice - avgPrice[ind]) / sharesBought[ind]);
+            }
+            repaint();
+        }
+
+        if (GameUtils.isInside(e, 605, 755, 190, 265)) {
+            main.increaseMoney((long) (sharePrice * sharesBought[ind]));
+            sharesBought[ind] = 0;
+            avgPrice[ind] = 0;
             repaint();
         }
     }
