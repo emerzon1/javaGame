@@ -27,7 +27,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(20, this);
-        money = 99000000099L;
+        money = 9999L;
         timer.start();
         insideHomeButton = false;
         businesses = List.of(

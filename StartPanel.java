@@ -100,22 +100,18 @@ public class StartPanel extends GamePanel implements ActionListener {
         // TODO Auto-generated method stub
         for (Point p : money) {
             p.y++;
-            if (p.y >= 600) {
-                p.y -= 600;
+            if (p.y >= 700) {
+                p.y -= 750;
+                p.x = (int) (Math.random() * 900);
             }
-            if (p.rot >= 50) {
-                p.movingUp = false;
-            } else if (p.rot <= -50) {
-                p.movingUp = true;
+            if (Math.random() > 0.999) {
+                p.movingUp = !p.movingUp;
             }
             if (p.movingUp) {
-                p.rot += .75;
+                p.rot += 1.3 * Math.random();
             } else {
-                p.rot -= .75;
+                p.rot -= 1.3 * Math.random();
             }
-            // if (p.rot < 0) {
-            // p.rot += 360;
-            // }
         }
         repaint();
     }

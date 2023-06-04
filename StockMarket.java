@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 public class StockMarket extends GamePanel implements ActionListener {
-    private Timer t = new Timer(1300, this);
+    private Timer t = new Timer(4000, this);
     private List<Double> oilHistory;
     private List<Double> goldHistory;
     private List<Double> diamondHistory;
@@ -19,12 +19,16 @@ public class StockMarket extends GamePanel implements ActionListener {
         oilHistory.add(10.0);
         goldHistory.add(500.0);
         diamondHistory.add(3000.0);
+        for (int i = 0; i < 30; i++) {
+            createNewStat();
+        }
         t.start();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        long money = (((MainGamePanel) container.mainPanel).money);
         g.setColor(new Color(27, 133, 3, 123));
         g.fillRect(0, 0, 50, 50);
         GameUtils.drawImage("closeIcon.png", g, 50, 50);
@@ -42,24 +46,76 @@ public class StockMarket extends GamePanel implements ActionListener {
             }
             ind++;
         }
-
+        List<Double> history = getHistoryList(selected);
+        double currPrice = history.get(history.size() - 1);
+        long halfShares = (long) (money / 2 / currPrice);
+        long quarterShares = (long) (money / 4 / currPrice);
+        long allShares = (long) (money / currPrice);
+        g.setColor(new Color(211, 237, 12));
+        if (money < currPrice) {
+            g.setColor(new Color(100, 100, 100));
+        }
+        g.fillRect(50, 610, 150, 75);
+        g.setColor(new Color(211, 237, 12));
+        if (quarterShares == 0) {
+            g.setColor(new Color(100, 100, 100));
+        }
+        g.fillRect(250, 610, 150, 75);
+        g.setColor(new Color(211, 237, 12));
+        if (halfShares == 0) {
+            g.setColor(new Color(100, 100, 100));
+        }
+        g.fillRect(450, 610, 150, 75);
+        g.setColor(new Color(211, 237, 12));
+        if (money < currPrice) {
+            g.setColor(new Color(100, 100, 100));
+        }
+        g.fillRect(650, 610, 150, 75);
         g.setColor(Color.BLACK);
         g.drawString("Invest: ", 400, 600);
-
+        g.setFont(new Font("Teko", Font.BOLD, 20));
+        g.drawString("1 Share", 85, 630);
+        g.drawString(String.format("($%.2f)", currPrice),
+                85 - (currPrice > 1000 ? 20 : 0), 650);
+        g.drawString("50% of money", 455, 630);
+        g.drawString(String.format("%s shares", (halfShares > 10000 ? GameUtils.format(halfShares) : halfShares + "")),
+                455,
+                650);
+        g.drawString(String.format("($%s)",
+                (halfShares * currPrice > 10000 ? GameUtils.format((long) (halfShares * currPrice))
+                        : String.format("%.2f", halfShares * currPrice))),
+                455, 670);
+        g.drawString("25% of money", 255, 630);
+        g.drawString(
+                String.format("%s shares",
+                        (quarterShares > 10000 ? GameUtils.format(quarterShares) : quarterShares + "")),
+                255,
+                650);
+        g.drawString(String.format("($%s)",
+                (quarterShares * currPrice > 10000 ? GameUtils.format((long) (quarterShares * currPrice))
+                        : String.format("%.2f", quarterShares * currPrice))),
+                255, 670);
+        g.drawString("Max", 660, 630);
+        g.drawString(
+                String.format("%s shares",
+                        (allShares > 10000 ? GameUtils.format(allShares) : allShares + "")),
+                660,
+                650);
         drawGraph(g);
     }
 
     public void drawGraph(Graphics graph) {
         Graphics2D g = (Graphics2D) graph;
+        g.setColor(new Color(0, 0, 0));
         int border = 150;
         Color graphColor = new Color(200, 120, 0);
         Color graphPointColor = new Color(0, 0, 0, 220);
-        int pointWidth = 15;
+        int pointWidth = 11;
         int yTicks = 10;
         List<Double> hist = getHistoryList(selected);
-        int xTicks = Math.min(hist.size(), 15);
+        int xTicks = Math.min(hist.size(), 30);
         double maxScore = 0;
-        for (int i = hist.size() - 1; i > Math.max(0, hist.size() - 15); i--) {
+        for (int i = hist.size() - 1; i > Math.max(0, hist.size() - 30); i--) {
             if (hist.get(i) > maxScore) {
                 maxScore = hist.get(i);
             }
@@ -69,9 +125,9 @@ public class StockMarket extends GamePanel implements ActionListener {
         double xScale = ((double) getWidth() - 2 * border) / (xTicks - 1);
         double yScale = ((double) getHeight() - 2 * border) / (maxScore - 1);
 
-        List<Point> graphPoints = new ArrayList<Point>();
-        for (int i = hist.size() - 1; i > Math.max(0, hist.size() - 15); i--) {
-            int x1 = (int) ((i - Math.max(0, hist.size() - 15)) * xScale + border);
+        List<Point> graphPoints = new ArrayList<>();
+        for (int i = hist.size() - 1; i > Math.max(0, hist.size() - 30); i--) {
+            int x1 = (int) ((i - Math.max(0, hist.size() - 30)) * xScale + border);
             int y1 = (int) ((maxScore - hist.get(i)) * yScale + border);
             graphPoints.add(0, new Point(x1, y1));
         }
@@ -106,6 +162,24 @@ public class StockMarket extends GamePanel implements ActionListener {
             int y = graphPoints.get(i).y - pointWidth / 2;
             g.fillOval(x, y, pointWidth, pointWidth);
         }
+
+        g.setFont(new Font("Teko", Font.PLAIN, 20));
+        g.drawString(String.format("Current Price: $%.2f", hist.get(hist.size() - 1)),
+                550, 90);
+        if (hist.size() > 30) {
+            double avg = 0.0;
+            double high = Double.MIN_VALUE;
+            double low = Double.MAX_VALUE;
+            for (int i = hist.size() - 1; i >= hist.size() - 30; i--) {
+                avg += hist.get(i);
+                high = Math.max(high, hist.get(i));
+                low = Math.min(low, hist.get(i));
+            }
+            g.drawString(String.format("30 Day Rolling Average: $%.2f", avg / 30), 550, 115);
+            g.drawString(String.format("30 Day High: $%.2f", high), 550, 140);
+            g.drawString(String.format("30 Day Low: $%.2f", low), 550, 165);
+
+        }
     }
 
     public List<Double> getHistoryList(String s) {
@@ -136,16 +210,23 @@ public class StockMarket extends GamePanel implements ActionListener {
         }
     }
 
+    public void createNewStat() {
+        oilHistory.add(
+                Math.max(oilHistory.get(oilHistory.size() - 1) * (1 + ((Math.random() - 0.50) / 5)), 0));
+        goldHistory.add(
+                Math.max(goldHistory.get(goldHistory.size() - 1)
+                        * (1 + ((Math.random() - (goldHistory.get(goldHistory.size() - 1) > 5000 ? 0.52 : 0.49)) / 4)),
+                        0));
+        diamondHistory.add(
+                Math.max(diamondHistory.get(diamondHistory.size() - 1)
+                        * (1 + ((Math.random() - (diamondHistory.get(diamondHistory.size() - 1) > 30000 ? 0.53 : 0.48))
+                                / 1.5)),
+                        0));
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        oilHistory.add(
-                Math.min(Math.max(oilHistory.get(oilHistory.size() - 1) * (1 + ((Math.random() - 0.5) / 5)), 0), 20));
-        diamondHistory.add(
-                Math.min(Math.max(diamondHistory.get(diamondHistory.size() - 1) * (1 + ((Math.random() - 0.5) / 5)), 0),
-                        20000));
-        goldHistory.add(
-                Math.min(Math.max(goldHistory.get(goldHistory.size() - 1) * (1 + ((Math.random() - 0.5) / 5)), 0),
-                        2000));
-        repaint(150, 0, 750, 700);
+        createNewStat();
+        repaint();
     }
 }
