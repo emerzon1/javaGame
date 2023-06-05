@@ -2,15 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public abstract class GamePanel extends JPanel implements MouseListener, MouseMotionListener {
+public abstract class GamePanel extends JPanel implements MouseListener, MouseMotionListener { // abstract class -
+                                                                                               // extended by panels
 
     public MainFrame container;
     private JLabel statusbar;
 
-    protected GamePanel(MainFrame c) {
+    protected GamePanel(MainFrame c) { // used to add listeners
         container = c;
         statusbar = new JLabel("default");
-        // STATUS BAR is for debugging --- remove when turn in
+        // STATUS BAR is for debugging --- remove when turn in -- removed
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -20,7 +21,7 @@ public abstract class GamePanel extends JPanel implements MouseListener, MouseMo
         addMouseMotionListener(this);
     }
 
-    protected void navigateTo(String loc) {
+    protected void navigateTo(String loc) { // switch card in cardLayout
         container.layout.show(container.mainCards, loc);
     }
 

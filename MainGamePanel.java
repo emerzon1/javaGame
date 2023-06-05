@@ -11,11 +11,10 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     private long moneyPerClick = 1L;
     private long upgradeClickPrice = 10L;
     private Timer timer;
-    private boolean smUnlocked = false;
-    public long money;
+    private boolean smUnlocked = false; // stock market unlocked
+    public long money; // how much money user has
     private boolean canWin = false;
     private boolean hasWon = false;
-    private int xSlide;
     private int numUnlocked = 1;
     private List<Business> businesses;
 
@@ -30,10 +29,10 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(20, this);
-        money = 10000L;
+        money = 0L;
         timer.start();
         insideHomeButton = false;
-        businesses = List.of(
+        businesses = List.of( // initialize businesses
                 new Business(100, false, 25, 200, 300, this, true, 0),
                 new Business(5000, false, 25, 350, 500, this, 1),
                 new Business(30000, false, 25, 500, 1000, this, 2),
@@ -50,7 +49,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (hasWon) {
-            GameUtils.drawImage("StartScreenUp1.png", g);
+            GameUtils.drawImage("StartScreenUp1.png", g); // win screen
             g.setFont(new Font("Teko", Font.BOLD, 60));
             g.drawString("CONGRATS!", 320, 300);
             g.setFont(new Font("Teko", Font.BOLD, 30));

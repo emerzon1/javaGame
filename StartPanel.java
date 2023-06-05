@@ -14,7 +14,7 @@ public class StartPanel extends GamePanel implements ActionListener {
     private boolean clickedS = false;
     private int numShowing = 10;
     private Timer t = new Timer(10, this);
-    private ArrayList<Point> money;
+    private ArrayList<Point> money; // the money raining from the top
 
     public StartPanel(MainFrame c) {
         super(c);
@@ -86,29 +86,28 @@ public class StartPanel extends GamePanel implements ActionListener {
         insideS = false;
 
         if (GameUtils.isInside(e, 350, 550, 275, 375)) {
-            insideS = true;
+            insideS = true; // inside start button
         }
 
         if (GameUtils.isInside(e, 350, 550, 400, 500)) {
-            insideI = true;
+            insideI = true; // inside instructions button
         }
         repaint();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        for (Point p : money) {
+        for (Point p : money) { // move the falling money down
             p.y++;
-            if (p.y >= 700) {
+            if (p.y >= 700) { // wrap back to top
                 p.y -= 750;
                 p.x = (int) (Math.random() * 900);
             }
-            if (Math.random() > 0.999) {
+            if (Math.random() > 0.999) { // rotation switches
                 p.movingUp = !p.movingUp;
             }
             if (p.movingUp) {
-                p.rot += 1.3 * Math.random();
+                p.rot += 1.3 * Math.random(); // change the rotation
             } else {
                 p.rot -= 1.3 * Math.random();
             }

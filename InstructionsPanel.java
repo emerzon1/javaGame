@@ -12,13 +12,13 @@ public class InstructionsPanel extends GamePanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        GameUtils.drawImage("StartScreen1.png", g);
+        GameUtils.drawImage("StartScreen1.png", g); // background
         g.setFont(new Font("Teko", Font.PLAIN, 15));
         g.setColor(new Color(50, 232, 8));
         g.fillRect(172, 180, 553, 700);
         g.setColor(new Color(0, 0, 0));
         int stringWidth = 70;
-        for (int i = 0; i <= GameUtils.INSTRUCTIONS.length(); i += stringWidth) {
+        for (int i = 0; i <= GameUtils.INSTRUCTIONS.length(); i += stringWidth) { // draw instructions, 70 chars/line
             g.drawString(
                     i + stringWidth > GameUtils.INSTRUCTIONS.length() ? GameUtils.INSTRUCTIONS.substring(i)
                             : GameUtils.INSTRUCTIONS.substring(i, i + stringWidth),
@@ -26,7 +26,7 @@ public class InstructionsPanel extends GamePanel {
         }
 
         g.setColor(new Color(211, 237, 12));
-        if (insideHome) {
+        if (insideHome) { // home button (change color on hover)
             g.setColor(new Color(3, 205, 255));
         }
         g.setFont(GameUtils.buttonFont);

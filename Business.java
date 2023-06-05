@@ -13,14 +13,14 @@ public class Business {
     private boolean isMaxSpeed = false;
     private int level = 1;
     public boolean managerBought = false;
-    public int time;
-    public int timePassed;
+    public int time; // time to fill
+    public int timePassed; // time since filled
     private MainGamePanel container;
     private int busNum;
 
     public void tick() {
         if (isSliding) {
-            timePassed += 10;
+            timePassed += 10; // move slider
         }
     }
 
@@ -94,40 +94,41 @@ public class Business {
         if (!bought) {
             g.setColor(new Color(150, 150, 150, 150));
         }
-        g.fillRect(xPos, yPos, 175, 75);// First Business
+        g.fillRect(xPos, yPos, 175, 75);// First Business - slider
 
         g.setColor(new Color(255, 140, 0));
         // Buy / Upgrade Buttons
         if (!unlocked || level == 100) {
             g.setColor(new Color(100, 100, 100));
         }
-        g.fillRect(xPos + 180, yPos, 150, 75);
+        g.fillRect(xPos + 180, yPos, 150, 75); // buy/upgrade buttons
         if (bought && !managerBought) {
             g.fillRect(xPos, yPos - 30, 100, 25);
             g.setColor(new Color(0, 0, 0));
-            g.drawString("Manager: $" + GameUtils.format(price * 13), xPos + 10, yPos - 15);
+            g.drawString("Manager: $" + GameUtils.format(price * 13), xPos + 10, yPos - 15); // buy manager button
         }
         g.setColor(new Color(0, 0, 0));
         g.setFont(GameUtils.buttonFont);
-        g.drawString(bought ? "Upgrade" : "Buy", xPos + (bought ? 192 : 220), yPos + 50);
+        g.drawString(bought ? "Upgrade" : "Buy", xPos + (bought ? 192 : 220), yPos + 50); // upgrade text
         g.setFont(new Font("Teko", Font.PLAIN, 10));
-        g.drawString("Price: $" + GameUtils.format(bought ? upgrade : price), xPos + 185, yPos + 90);
+        g.drawString("Price: $" + GameUtils.format(bought ? upgrade : price), xPos + 185, yPos + 90); // price shows
+                                                                                                      // under
         if (bought) {
-            g.drawString("$" + GameUtils.format(money) + " / fill", xPos + 10, yPos + 90);
+            g.drawString("$" + GameUtils.format(money) + " / fill", xPos + 10, yPos + 90); // money per fill shows
         }
         if (isSliding) {
             if (isMaxSpeed) {
                 g.fillRect(xPos, yPos, 175, 75);
             } else {
                 g.setColor(new Color(255, 0, 0));
-                g.fillRect(xPos, yPos, (175 * timePassed) / time, 75);
+                g.fillRect(xPos, yPos, (175 * timePassed) / time, 75); // fill slider with red
                 g.setColor(new Color(0, 0, 0));
             }
         } else {
             wasSliding = false;
         }
         // draw icons
-        GameUtils.drawImage("Lem_Icon.png", g, 150, 75, 25, 200);
+        GameUtils.drawImage("Lem_Icon.png", g, 150, 75, 25, 200); // icons on buttons
         GameUtils.drawImage("Fish_Icon.png", g, 150, 75, 25, 350);
         GameUtils.drawImage("Piz_Icon.png", g, 150, 75, 25, 500);
         GameUtils.drawImage("Film_Icon.png", g, 150, 75, 450, 200);
@@ -137,7 +138,7 @@ public class Business {
         g.setColor(new Color(0, 0, 0));
         if (timePassed >= time) {
             timePassed -= time;
-            container.increaseMoney(money);
+            container.increaseMoney(money); // increase money if filled
             if (!managerBought) {
                 isSliding = false;
             }
@@ -171,18 +172,18 @@ public class Business {
         if (level == 100) {
             return;
         }
-        container.increaseMoney(-1 * upgrade);
-        money *= 1.3 + (0.03 * busNum);
+        container.increaseMoney(-1 * upgrade); // decrease money by upgrade price
+        money *= 1.3 + (0.03 * busNum); // increase next upgrade
         upgrade *= 1.4;
         level++;
         if (level % 20 == 0) {
-            time = (int) Math.round(time * 0.80 / 10) * 10;
+            time = (int) Math.round(time * 0.80 / 10) * 10; // decrease time to fill every 20 levels
             if (time < 100) {
                 isMaxSpeed = true;
             }
         }
         if (level % 10 == 0) {
-            money *= 2 + (.5 * busNum);
+            money *= 2 + (.5 * busNum); // 2x+ the price every 10 levels
         }
     }
 

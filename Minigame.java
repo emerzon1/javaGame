@@ -83,13 +83,17 @@ public class Minigame extends GamePanel implements ActionListener, KeyListener {
         g.fillRect(0, 0, 50, 50);
         GameUtils.drawImage("homeLogo.png", g, 50, 50);
         g.setColor(Color.RED);
+        // draw moving blocks
         g.fillRect(movingBlock1.x, movingBlock1.y, movingBlock1.width, movingBlock1.height);
         g.fillRect(movingBlock2.x, movingBlock2.y, movingBlock2.width, movingBlock2.height);
         g.fillRect(movingBlock3.x, movingBlock3.y, movingBlock3.width, movingBlock3.height);
 
-        g.drawString(
+        g.drawString( // instructions
                 "Use the right and left arrow keys to move.\n Space to Jump. \n Avoid the moving red square. \n Reach the yellow door on the top to gain money!!",
                 0, 250);
+        g.drawString(
+                "If the keys aren't working, click out of the window and back in.",
+                0, 270);
     }
 
     @Override
@@ -148,6 +152,7 @@ public class Minigame extends GamePanel implements ActionListener, KeyListener {
         // Check if the character reaches the end door
         if (locY + 50 >= endDoor.y && locY <= endDoor.y + endDoor.height && locX + 50 >= endDoor.x
                 && locX <= endDoor.x + endDoor.width) {
+            MainGamePanel.setPaused(false);
             navigateTo("game");
 
             MainGamePanel main = (MainGamePanel) (container.mainPanel);
