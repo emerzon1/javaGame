@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Utils for all classes (static)
+*/
+
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,18 +28,19 @@ public class GameUtils {
     private GameUtils() {
         BufferedImage background = null;
         try {
-            background = ImageIO.read(new File("./images/moneyMini.png"));
+            background = ImageIO.read(new File("./images/moneyMini.png")); // add bg
         } catch (IOException e) {
             e.printStackTrace();
         }
         images.put("moneyMini", background);
     }
 
-    public static boolean isInside(MouseEvent e, int startX, int endX, int startY, int endY) {
+    public static boolean isInside(MouseEvent e, int startX, int endX, int startY, int endY) { // check if mouse is
+                                                                                               // inside given coords
         return e.getX() >= startX && e.getX() <= endX && e.getY() >= startY && e.getY() <= endY;
     }
 
-    public static void drawImage(String image, Graphics g) {
+    public static void drawImage(String image, Graphics g) { // draw image without
         BufferedImage background = null;
         if (!images.containsKey(image)) {
             try {
@@ -51,24 +58,20 @@ public class GameUtils {
         return String.format("%,d", l);
     }
 
-    private static final TreeMap<Long, String> suffixes = new TreeMap<>();
+    private static final TreeMap<Long, String> suffixes = new TreeMap<>(); // add values to suffixes
     static {
         suffixes.put(1_000L, "K");
         suffixes.put(1_000_000L, "M");
         suffixes.put(1_000_000_000L, "B");
         suffixes.put(1_000_000_000_000L, "T");
         suffixes.put(1_000_000_000_000_000L, "q");
-        suffixes.put(1_000_000_000_000_000_000L, "Q");
     }
 
-    public static String format(long value) {
-        // Long.MIN_VALUE == -Long.MIN_VALUE so we need an adjustment here
-        if (value == Long.MIN_VALUE)
-            return format(Long.MIN_VALUE + 1);
+    public static String format(long value) { // return number formatted with K/M/B etc.
         if (value < 0)
             return "-" + format(-value);
         if (value < 1000)
-            return Long.toString(value); // deal with easy case
+            return Long.toString(value); // normal
 
         Entry<Long, String> e = suffixes.floorEntry(value);
         Long divideBy = e.getKey();
@@ -79,7 +82,7 @@ public class GameUtils {
         return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
     }
 
-    public static void drawImage(String image, Graphics g, int width, int height) {
+    public static void drawImage(String image, Graphics g, int width, int height) { // draw image given width and height
         BufferedImage background = null;
         if (!images.containsKey(image)) {
             try {
@@ -87,13 +90,13 @@ public class GameUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            images.put(image, background);
+            images.put(image, background); // cache
         }
         background = images.get(image);
         g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
     }
 
-    public static void drawImage(String image, int x, int y, Graphics g) {
+    public static void drawImage(String image, int x, int y, Graphics g) { // given x and y
         BufferedImage background = null;
         if (!images.containsKey(image)) {
             try {
@@ -107,7 +110,7 @@ public class GameUtils {
         g.drawImage(background, x, y, null);
     }
 
-    public static BufferedImage rotateMoney(int degree) {
+    public static BufferedImage rotateMoney(int degree) { // rotate money image (used on home screen)
         BufferedImage background = null;
         if (!images.containsKey("moneyMini")) {
             try {
@@ -131,10 +134,9 @@ public class GameUtils {
         return result;
     }
 
-    public static void drawImage(String image, Graphics g, int width, int height, int x, int y) {
+    public static void drawImage(String image, Graphics g, int width, int height, int x, int y) { // given h, w, x, y
         BufferedImage background = null;
         if (!images.containsKey(image)) {
-            System.out.println("not cached");
             try {
                 background = ImageIO.read(new File("./images/" + image));
             } catch (IOException e) {
@@ -146,7 +148,9 @@ public class GameUtils {
         g.drawImage(background.getScaledInstance(width, height, Image.SCALE_SMOOTH), x, y, null);
     }
 
-    public static void drawImage(String image, Graphics g, int width, int height, int x, int y, JPanel observer) {
+    public static void drawImage(String image, Graphics g, int width, int height, int x, int y, JPanel observer) { // given
+                                                                                                                   // observer
+                                                                                                                   // also
         BufferedImage background = null;
         if (!images.containsKey(image)) {
             try {

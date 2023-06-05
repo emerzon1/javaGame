@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Abstract class to prevent writing boilerplate in all panels - adds event listeners and empty implementations
+*/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Home frame
+*/
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -5,11 +11,6 @@ import javax.swing.*;
 import javax.swing.WindowConstants;
 
 import java.awt.*;
-/*
-*  Evan Merzon
-*  05/11/2023
-*  Frames with graphics
-*/
 import java.io.File;
 
 public class MainFrame extends JFrame {
@@ -28,6 +29,7 @@ public class MainFrame extends JFrame {
         frame = new JFrame("Money Moves");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        // create panels
         instructionsPanel = createInstructionsPanel();
         startPanel = createStartPanel();
         mainPanel = createMainPanel();
@@ -35,6 +37,7 @@ public class MainFrame extends JFrame {
         miniGame = createMiniGamePanel();
         stockMarket = createStockMarketPanel();
 
+        // add panels to cardLayout
         mainCards = new JPanel(layout);
         mainCards.add(instructionsPanel, "instructions");
         mainCards.add(startPanel, "start");
@@ -42,11 +45,14 @@ public class MainFrame extends JFrame {
         mainCards.add(miniGame, "MiniGame");
         mainCards.add(stockMarket, "stockMarket");
 
+        // display cardLayout in different JPanel (idk why we needed to do this, but it
+        // wasn't working w/o this)
         JPanel home = new JPanel();
         home.add(mainCards);
         layout.show(mainCards, "start");
         frame.getContentPane().add(home);
 
+        // play music
         try {
             // Open an audio input stream.
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("./sounds/Music.wav"));

@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Main Game - shows businesses
+*/
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -18,16 +24,8 @@ public class MainGamePanel extends GamePanel implements ActionListener {
     private int numUnlocked = 1;
     private List<Business> businesses;
 
-    public long getMoney() {
-        return money;
-    }
-
-    public void addMoney(long a) {
-        money += a;
-    }
-
     public MainGamePanel(MainFrame c) {
-        super(c);
+        super(c); // pass in container so that navigation works
         timer = new Timer(20, this);
         money = 0L;
         timer.start();
@@ -59,24 +57,24 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
         g.setColor(new Color(27, 133, 3, 123));
         g.fillRect(0, 0, 50, 50);
-        GameUtils.drawImage("homeLogo.png", g, 50, 50);
+        GameUtils.drawImage("homeLogo.png", g, 50, 50); // show home logo in top left corner
         g.setColor(new Color(0, 0, 0));
         g.setFont(new Font("Teko", Font.BOLD, 40));
-        g.drawString("Money: $" + GameUtils.format(money), 330, 40);
+        g.drawString("Money: $" + GameUtils.format(money), 330, 40); // show user's money, formatted
 
         g.setColor(new Color(211, 237, 12));
         g.fillRect(200, 75, 200, 75);
         g.fillRect(450, 75, 200, 75);
-        if (Minigame.level > 2) {
+        if (Minigame.level > 2) { // cannot play other levels
             g.setColor(new Color(100, 100, 100));
         }
-        g.fillRect(800, 100, 95, 75);
-        if (money >= 10_000_000_000_000L) {
+        g.fillRect(800, 100, 95, 75); // win button
+        if (money >= 10_000_000_000_000L) { // user can win!
             g.fillRect(150, 600, 600, 75);
             g.setColor(new Color(0, 0, 0));
             canWin = true;
             g.drawString("Win Game!", 350, 650);
-        } else {
+        } else { // user cannot win
             g.setColor(new Color(100, 100, 100));
             g.fillRect(150, 600, 600, 75);
             g.setColor(new Color(0, 0, 0));
@@ -95,25 +93,25 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.drawString("Click for $", 220, 125);
         g.setFont(new Font("Teko", Font.PLAIN, 10));
         g.drawString("$" + GameUtils.formatNumberWithCommas(moneyPerClick) + " per click", 200, 160);
-        for (Business b : businesses) {
+        for (Business b : businesses) { // show the businesses
             b.draw(g);
         }
 
         g.drawString("Play Minigame", 810, 110);
         g.drawString((3 - Minigame.level) + " Play" + (Minigame.level == 2 ? "" : "s") + " left", 810, 140);
-        g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $10K", 810 + (smUnlocked ? 10 : 0), 285);
+        g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $10K", 810 + (smUnlocked ? 10 : 0), 285); // stock market
     }
 
     public void increaseMoney(long change) {
         money += change;
-        repaint(0, 0, 900, 100);
+        repaint(0, 0, 900, 100); // only repaint top
         if (money >= 10_000_000_000_000L) {
-            repaint(0, 500, 900, 100);
+            repaint(0, 500, 900, 100); // optimized repaint -- only show win button
             canWin = true;
         }
         if (money >= 10000 && !smUnlocked) {
             smUnlocked = true;
-            repaint(600, 100, 300, 500);
+            repaint(600, 100, 300, 500); // only repaint stock market button
         }
     }
 
@@ -128,8 +126,9 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
         for (Business b : businesses) {
             if (b.isUnlocked() && b.wasSliding) {
-                b.tick();
-                repaint(b.getXBounds(), b.getYBounds(), (175 * b.timePassed) / b.time + 10, 75);
+                b.tick(); // move the slider
+                repaint(b.getXBounds(), b.getYBounds(), (175 * b.timePassed) / b.time + 10, 75); // only repaint part of
+                                                                                                 // the slider
             }
         }
     }
@@ -172,36 +171,36 @@ public class MainGamePanel extends GamePanel implements ActionListener {
             setPaused(true);
         }
         if (GameUtils.isInside(e, 450, 650, 75, 150)) {
-            if (money >= upgradeClickPrice) {
+            if (money >= upgradeClickPrice) { // upgrading clicking
                 increaseMoney(-1 * upgradeClickPrice);
                 upgradeClickPrice *= 1.8;
                 moneyPerClick += 1 + 0.35 * moneyPerClick;
             }
         }
         if (GameUtils.isInside(e, 150, 750, 600, 675) && canWin) {
-            hasWon = true;
+            hasWon = true; // move to win screen
             repaint();
         }
         if (smUnlocked && GameUtils.isInside(e, 800, 895, 275, 350)) {
-            navigateTo("stockMarket");
+            navigateTo("stockMarket"); // move to stock market
             setPaused(true);
         }
         for (Business b : businesses) {
             if (b.isUnlocked()) {
                 if (!b.isBought() && b.isInsideBuy(e) && money >= b.getPrice()) {
-                    b.setBought();
+                    b.setBought(); // user is inside buy business button - buy it
                     money -= b.getPrice();
                     if (numUnlocked < businesses.size()) {
-                        businesses.get(numUnlocked++).unlock();
+                        businesses.get(numUnlocked++).unlock(); // unlock next business
                     }
                 } else if (b.isInsideBuy(e) && money >= b.getUpgradePrice()) {
-                    b.upgrade();
+                    b.upgrade(); // upgrade (if user can)
                 }
                 if (b.isInsideSlider(e) && b.isBought()) {
-                    b.setSliding();
+                    b.setSliding(); // start slider
                 }
                 if (!b.managerBought && b.isInsideManager(e)) {
-                    if (money >= b.getPrice() * 13) {
+                    if (money >= b.getPrice() * 13) { // buy manager
                         money -= b.getPrice() * 13;
                         b.managerBought = true;
                     }

@@ -1,3 +1,8 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Start screen
+*/
 
 import java.util.*;
 import java.awt.*;
@@ -22,7 +27,8 @@ public class StartPanel extends GamePanel implements ActionListener {
         for (int i = 0; i < 5; i++) {
             for (int j = -600; j <= 0; j += 150) {
                 money.add(new Point((int) (Math.random() * 900), j + ((int) (Math.random() * 200) - 100),
-                        (int) (Math.random() * 360)));
+                        (int) (Math.random() * 360))); // create money, starting at the top but staggered with negative
+                                                       // y values
             }
         }
         t.start();

@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Show instructions
+*/
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -45,7 +51,7 @@ public class InstructionsPanel extends GamePanel {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent e) { // fire event if inside home button
         if (GameUtils.isInside(e, 325, 525, 590, 690) && hasClicked) {
             navigateTo("start");
         }
@@ -54,7 +60,7 @@ public class InstructionsPanel extends GamePanel {
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void mouseMoved(MouseEvent e) { // highlight if inside
         super.mouseMoved(e);
         if (GameUtils.isInside(e, 325, 525, 590, 690)) {
             insideHome = true;

@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  06/1/2023
+*  Minigame
+*/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -49,6 +55,7 @@ public class Minigame extends GamePanel implements ActionListener, KeyListener {
         addKeyListener(this);
         addMouseListener(this);
 
+        // blocks
         platform1 = new Rectangle(200, 500, 200, 20);
         platform2 = new Rectangle(400, 150, 150, 20);
         platform3 = new Rectangle(100, 300, 180, 20);
@@ -166,6 +173,7 @@ public class Minigame extends GamePanel implements ActionListener, KeyListener {
             isJumping = false;
             isFalling = true;
             level++;
+            // create next level
             platform1 = new Rectangle(700, 500, 200, 20);
             platform2 = new Rectangle(500, 400, 150, 20);
             platform3 = new Rectangle(200, 300, 180, 20);

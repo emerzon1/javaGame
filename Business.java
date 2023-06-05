@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Class to show Business upgrades and store business prices, as well as managing the slider and increasing money
+*/
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -151,7 +157,7 @@ public class Business {
         }
         if (managerBought) {
 
-            isSliding = true;
+            isSliding = true; // always keep it sliding if own manager
             wasSliding = true;
         }
     }

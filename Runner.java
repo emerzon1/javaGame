@@ -1,6 +1,6 @@
 /*
-*  Evan Merzon
-*  05/11/2023
+*  Evan Merzon and Ryo Yoshida
+*  05/20/2023
 *  Runner Class
 */
 

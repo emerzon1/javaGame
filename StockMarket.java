@@ -1,3 +1,9 @@
+/*
+*  Evan Merzon and Ryo Yoshida
+*  05/25/2023
+*  Stock Market
+*/
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -19,11 +25,12 @@ public class StockMarket extends GamePanel implements ActionListener {
         oilHistory = new ArrayList<>();
         diamondHistory = new ArrayList<>();
         goldHistory = new ArrayList<>();
+        // starting prices
         oilHistory.add(10.0);
         goldHistory.add(1000.0);
         diamondHistory.add(100000.0);
         for (int i = 0; i < 30; i++) {
-            createNewStat();
+            createNewStat(); // add 30 days of stuff (random)
         }
         t.start();
     }
@@ -42,7 +49,7 @@ public class StockMarket extends GamePanel implements ActionListener {
 
         int index = 1;
         for (String s : List.of("oil", "gold", "diamond")) {
-            if (s.equals(selected)) {
+            if (s.equals(selected)) { // depending on if the logo is selected
                 GameUtils.drawImage(s + "Blue.png", g, 100, 90, 25, index * 150, this);
             } else {
                 GameUtils.drawImage(s + "Norm.png", g, 100, 90, 25, index * 150, this);
@@ -51,10 +58,11 @@ public class StockMarket extends GamePanel implements ActionListener {
         }
         List<Double> history = getHistoryList(selected);
         double currPrice = history.get(history.size() - 1);
-        long halfShares = (long) (money / 2 / currPrice);
-        long quarterShares = (long) (money / 4 / currPrice);
-        long allShares = (long) (money / currPrice);
+        long halfShares = (long) (money / 2 / currPrice); // 50% of money
+        long quarterShares = (long) (money / 4 / currPrice); // 25% of money
+        long allShares = (long) (money / currPrice); // Max
         g.setColor(new Color(211, 237, 12));
+        // draw investment buttons at bottom
         if (money < currPrice) {
             g.setColor(new Color(100, 100, 100));
         }
@@ -81,6 +89,9 @@ public class StockMarket extends GamePanel implements ActionListener {
         g.fillRect(605, 190, 150, 75);
         g.setColor(Color.BLACK);
         g.drawString("Invest: ", 400, 600);
+
+        // Show prices of investment inside the buttons
+
         g.setFont(new Font("Teko", Font.BOLD, 20));
         g.drawString("1 Share", 85, 630);
         g.drawString(String.format("($%.2f)", currPrice),
@@ -127,7 +138,7 @@ public class StockMarket extends GamePanel implements ActionListener {
                     450,
                     180);
         }
-        g.drawString("Sell All", 640, 210);
+        g.drawString("Sell All", 640, 210); // sell user's shares
         drawGraph(g);
     }
 
@@ -175,6 +186,7 @@ public class StockMarket extends GamePanel implements ActionListener {
             g.drawLine(x, getHeight() - border, x, getHeight() - border - pointWidth);
         }
 
+        // lines between points
         g.setColor(graphColor);
         g.setStroke(new BasicStroke(3));
         for (int i = 0; i < graphPoints.size() - 1; i++) {
@@ -183,6 +195,7 @@ public class StockMarket extends GamePanel implements ActionListener {
             g.drawLine(thisPoint.x, thisPoint.y, nextPoint.x, nextPoint.y);
         }
 
+        // circles as points
         g.setColor(graphPointColor);
         for (int i = 0; i < graphPoints.size(); i++) {
             int x = graphPoints.get(i).x - pointWidth / 2;
@@ -191,9 +204,11 @@ public class StockMarket extends GamePanel implements ActionListener {
         }
 
         g.setFont(new Font("Teko", Font.PLAIN, 20));
+
+        // stats to top left
         g.drawString(String.format("Current Price: $%,.2f", hist.get(hist.size() - 1)),
                 190, 90);
-        if (hist.size() > 30) {
+        if (hist.size() > 30) { // this will always be true now after changes (but just in case...)
             double avg = 0.0;
             double high = Double.MIN_VALUE;
             double low = Double.MAX_VALUE;
@@ -209,7 +224,7 @@ public class StockMarket extends GamePanel implements ActionListener {
         }
     }
 
-    public List<Double> getHistoryList(String s) {
+    public List<Double> getHistoryList(String s) { // get history list for selected one
         if (s.equals("gold")) {
             return goldHistory;
         }
@@ -225,6 +240,7 @@ public class StockMarket extends GamePanel implements ActionListener {
             navigateTo("game");
             MainGamePanel.setPaused(false);
         }
+        // switch selected graph
         if (GameUtils.isInside(e, 25, 125, 150, 250)) {
             selected = "oil";
             ind = 0;
@@ -241,6 +257,7 @@ public class StockMarket extends GamePanel implements ActionListener {
         MainGamePanel main = (MainGamePanel) (container.mainPanel);
         long money = main.money;
         double sharePrice = getHistoryList(selected).get(getHistoryList(selected).size() - 1);
+        // Buy shares!
         if (GameUtils.isInside(e, 50, 200, 610, 685) && money > sharePrice) {
             main.increaseMoney((long) (-1 * sharePrice));
             sharesBought[ind]++;
@@ -266,6 +283,7 @@ public class StockMarket extends GamePanel implements ActionListener {
             repaint();
         }
 
+        // sell all shares
         if (GameUtils.isInside(e, 605, 755, 190, 265)) {
             main.increaseMoney((long) (sharePrice * sharesBought[ind]));
             sharesBought[ind] = 0;
@@ -275,12 +293,19 @@ public class StockMarket extends GamePanel implements ActionListener {
     }
 
     public void createNewStat() {
+
+        // least volatile, trends up, but changes little
         oilHistory.add(
                 Math.max(oilHistory.get(oilHistory.size() - 1) * (1 + ((Math.random() - 0.505) / 5)), 1));
+
+        // volatile: trends up more than oil, changes more at a time, when it is above
+        // 50k it will trend down
         goldHistory.add(
                 Math.max(goldHistory.get(goldHistory.size() - 1)
                         * (1 + ((Math.random() - (goldHistory.get(goldHistory.size() - 1) > 50000 ? 0.51 : 0.49)) / 4)),
                         1));
+
+        // dangerous - changes a lot at a time, will tank when above 3M, so be careful
         diamondHistory.add(
                 Math.max(diamondHistory.get(diamondHistory.size() - 1)
                         * (1 + ((Math.random()
