@@ -169,9 +169,9 @@ public class GameUtils {
             +
             "and when the red progress bar   fills up, you will get paid.  When you get enough money, you can hire a manager so that you don't have to manually click each time you want to start working."
             +
-            "  Upgrade the businesses to make more money each     payout day. Every 10 levels, the business will get a big boost.  Twiceduring your journey, you are allowed to play the minigame, which will 10x your money on successful completion.  "
+            "  Upgrade the businesses to make more money each     payout day. Every 10 levels, the business will get a big boost.  Twiceduring your journey, you are allowed to play the minigame, which will 5x your money on successful completion. "
             +
-            "There  is also an in-game   market, which unlocks when you reach $10,000. You can invest your     money in commodities (oil, gold, or diamond).  Oil is the cheapest andleast volatile.  "
+            "There  is also an in-game     market, which unlocks when you reach $10,000. You can invest your     money in commodities (oil, gold, or diamond).  Oil is the cheapest andleast volatile.  "
             +
             "Gold is generally more expensive and riskier, and    diamond is the riskiest and most expensive.  Good luck!";
 }

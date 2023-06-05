@@ -23,13 +23,14 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         return money;
     }
 
-    public void addMoney(long a){
-        money+=a;
+    public void addMoney(long a) {
+        money += a;
     }
+
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(20, this);
-        money = 0L;
+        money = 10000L;
         timer.start();
         insideHomeButton = false;
         businesses = List.of(
@@ -67,6 +68,9 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         g.setColor(new Color(211, 237, 12));
         g.fillRect(200, 75, 200, 75);
         g.fillRect(450, 75, 200, 75);
+        if (Minigame.level > 2) {
+            g.setColor(new Color(100, 100, 100));
+        }
         g.fillRect(800, 100, 95, 75);
         if (money >= 10_000_000_000_000L) {
             g.fillRect(150, 600, 600, 75);
@@ -97,6 +101,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         }
 
         g.drawString("Play Minigame", 810, 110);
+        g.drawString((3 - Minigame.level) + " Play" + (Minigame.level == 2 ? "" : "s") + " left", 810, 140);
         g.drawString(smUnlocked ? "Stock Market" : "Unlocks at $10K", 810 + (smUnlocked ? 10 : 0), 285);
     }
 
@@ -163,7 +168,7 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         if (insideClickButton && GameUtils.isInside(e, 200, 400, 75, 150)) {
             increaseMoney(moneyPerClick);
         }
-        if (GameUtils.isInside(e, 800, 900, 100, 175) && insideMiniGame) {
+        if (GameUtils.isInside(e, 800, 900, 100, 175) && insideMiniGame && Minigame.level <= 2) {
             navigateTo("MiniGame");
             setPaused(true);
         }
