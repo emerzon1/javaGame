@@ -132,6 +132,7 @@ public class Business {
         GameUtils.drawImage("Piz_Icon.png", g, 150, 75, 25, 500);
         GameUtils.drawImage("Film_Icon.png", g, 150, 75, 450, 200);
         GameUtils.drawImage("Oil_Icon.png", g, 150, 75, 450, 350);
+        GameUtils.drawImage("logo_bank.png", g, 150, 75, 450, 500);
 
         g.setColor(new Color(0, 0, 0));
         if (timePassed >= time) {

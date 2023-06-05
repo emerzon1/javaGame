@@ -1,13 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Timer;
 
 public class MainGamePanel extends GamePanel implements ActionListener {
     public static boolean paused = true;
-    private boolean insideHomeButton, insideClickButton, insideBus1, insideBus2, insideBus3, insideBus4, insideBus5;
+    private boolean insideHomeButton, insideClickButton;
     private boolean insideMiniGame;
     private long moneyPerClick = 1L;
     private long upgradeClickPrice = 10L;
@@ -24,6 +23,9 @@ public class MainGamePanel extends GamePanel implements ActionListener {
         return money;
     }
 
+    public void addMoney(long a){
+        money+=a;
+    }
     public MainGamePanel(MainFrame c) {
         super(c);
         timer = new Timer(20, this);
